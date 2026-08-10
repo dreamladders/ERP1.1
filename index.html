@@ -1,0 +1,3351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Dream Ladders ERP</title>
+
+<style>
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f5f7fb;
+  color: #172033;
+}
+
+/* =========================
+   LOGIN / REGISTER
+========================= */
+
+.auth-screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background:
+    linear-gradient(
+      135deg,
+      #111827,
+      #1e293b,
+      #334155
+    );
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 430px;
+  background: white;
+  border-radius: 20px;
+  padding: 35px;
+  box-shadow: 0 25px 70px rgba(0,0,0,.25);
+}
+
+.logo {
+  font-size: 26px;
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 5px;
+}
+
+.logo span {
+  color: #2563eb;
+}
+
+.subtitle {
+  text-align: center;
+  color: #64748b;
+  margin-bottom: 28px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 7px;
+}
+
+input,
+textarea,
+select {
+  width: 100%;
+  border: 1px solid #dbe1ea;
+  border-radius: 10px;
+  padding: 12px 13px;
+  font-size: 14px;
+  outline: none;
+  background: white;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: #2563eb;
+}
+
+textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+button {
+  border: none;
+  border-radius: 10px;
+  padding: 11px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-primary {
+  width: 100%;
+  background: #2563eb;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #1d4ed8;
+}
+
+.btn-secondary {
+  background: #e2e8f0;
+  color: #172033;
+}
+
+.btn-danger {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.btn-success {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.btn-warning {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.auth-switch {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 14px;
+}
+
+.auth-switch button {
+  background: none;
+  color: #2563eb;
+  padding: 0;
+}
+
+.error {
+  background: #fee2e2;
+  color: #991b1b;
+  padding: 11px;
+  border-radius: 9px;
+  margin-bottom: 15px;
+  font-size: 14px;
+}
+
+.success {
+  background: #dcfce7;
+  color: #166534;
+  padding: 11px;
+  border-radius: 9px;
+  margin-bottom: 15px;
+  font-size: 14px;
+}
+
+/* =========================
+   APP
+========================= */
+
+.app {
+  display: none;
+  min-height: 100vh;
+}
+
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 240px;
+  background: #111827;
+  color: white;
+  padding: 25px 15px;
+  z-index: 10;
+}
+
+.sidebar-logo {
+  font-size: 22px;
+  font-weight: 800;
+  padding: 0 12px 30px;
+}
+
+.sidebar-logo span {
+  color: #60a5fa;
+}
+
+.nav-item {
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  color: #cbd5e1;
+  margin-bottom: 6px;
+}
+
+.nav-item:hover,
+.nav-item.active {
+  background: #1e293b;
+  color: white;
+}
+
+.sidebar-bottom {
+  position: absolute;
+  left: 15px;
+  right: 15px;
+  bottom: 20px;
+}
+
+.logout {
+  width: 100%;
+  background: #7f1d1d;
+  color: white;
+}
+
+.main {
+  margin-left: 240px;
+  min-height: 100vh;
+}
+
+.topbar {
+  height: 70px;
+  background: white;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 30px;
+}
+
+.page-title {
+  font-size: 21px;
+  font-weight: 700;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #2563eb;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+
+.content {
+  padding: 30px;
+}
+
+.page {
+  display: none;
+}
+
+.page.active {
+  display: block;
+}
+
+/* =========================
+   CARDS
+========================= */
+
+.stats {
+  display: grid;
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+  gap: 18px;
+  margin-bottom: 25px;
+}
+
+.stat-card {
+  background: white;
+  padding: 22px;
+  border-radius: 15px;
+  border: 1px solid #e5e7eb;
+}
+
+.stat-title {
+  color: #64748b;
+  font-size: 13px;
+}
+
+.stat-value {
+  font-size: 28px;
+  font-weight: 800;
+  margin-top: 8px;
+}
+
+.card {
+  background: white;
+  border-radius: 15px;
+  border: 1px solid #e5e7eb;
+  padding: 22px;
+  margin-bottom: 20px;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.card-title {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+/* =========================
+   TASKS
+========================= */
+
+.task-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(auto-fill, minmax(280px, 1fr));
+  gap: 18px;
+}
+
+.task-card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 15px;
+  padding: 18px;
+}
+
+.task-title {
+  font-weight: 700;
+  font-size: 17px;
+  margin-bottom: 8px;
+}
+
+.task-description {
+  color: #64748b;
+  font-size: 14px;
+  min-height: 40px;
+  margin-bottom: 15px;
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-bottom: 15px;
+}
+
+.badge {
+  padding: 5px 9px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.priority-low {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+
+.priority-medium {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.priority-high {
+  background: #ffedd5;
+  color: #c2410c;
+}
+
+.priority-urgent {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.status-pending {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.status-progress {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.status-completed {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.status-cancelled {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.task-actions {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+
+/* =========================
+   TABLE
+========================= */
+
+.table-container {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 13px;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 13px;
+}
+
+th {
+  background: #f8fafc;
+  font-weight: 700;
+}
+
+/* =========================
+   MODAL
+========================= */
+
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(15,23,42,.55);
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal.show {
+  display: flex;
+}
+
+.modal-box {
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: white;
+  border-radius: 18px;
+  padding: 25px;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.close {
+  background: #f1f5f9;
+  font-size: 18px;
+}
+
+/* =========================
+   LOADING
+========================= */
+
+.loading {
+  position: fixed;
+  inset: 0;
+  background: rgba(255,255,255,.75);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.loading.show {
+  display: flex;
+}
+
+.spinner {
+  width: 42px;
+  height: 42px;
+  border: 4px solid #dbeafe;
+  border-top-color: #2563eb;
+  border-radius: 50%;
+  animation: spin .8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+.mobile-menu {
+  display: none;
+}
+
+@media(max-width: 850px) {
+
+  .sidebar {
+    transform: translateX(-100%);
+    transition: .2s;
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .main {
+    margin-left: 0;
+  }
+
+  .mobile-menu {
+    display: block;
+    background: #f1f5f9;
+  }
+
+  .stats {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .content {
+    padding: 18px;
+  }
+}
+
+@media(max-width: 500px) {
+
+  .stats {
+    grid-template-columns: 1fr;
+  }
+
+  .topbar {
+    padding: 0 15px;
+  }
+
+  .user-info .user-name {
+    display: none;
+  }
+
+  .auth-card {
+    padding: 25px;
+  }
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- ======================================================
+     LOADING
+====================================================== -->
+
+<div class="loading" id="loading">
+  <div class="spinner"></div>
+</div>
+
+
+<!-- ======================================================
+     AUTH SCREEN
+====================================================== -->
+
+<div class="auth-screen" id="authScreen">
+
+  <div class="auth-card">
+
+    <div class="logo">
+      Dream <span>Ladders</span>
+    </div>
+
+    <div class="subtitle">
+      ERP Management System
+    </div>
+
+
+    <!-- LOGIN -->
+
+    <div id="loginForm">
+
+      <div id="loginMessage"></div>
+
+      <div class="form-group">
+
+        <label>Email</label>
+
+        <input
+          type="email"
+          id="loginEmail"
+          placeholder="you@example.com"
+        >
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label>Password</label>
+
+        <input
+          type="password"
+          id="loginPassword"
+          placeholder="Password"
+        >
+
+      </div>
+
+
+      <button
+        class="btn-primary"
+        onclick="login()"
+      >
+        Login
+      </button>
+
+
+      <div class="auth-switch">
+
+        Don't have an account?
+
+        <button
+          onclick="showRegister()"
+        >
+          Create account
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- REGISTER -->
+
+    <div id="registerForm" style="display:none">
+
+      <div id="registerMessage"></div>
+
+      <div class="form-group">
+
+        <label>Name</label>
+
+        <input
+          type="text"
+          id="registerName"
+          placeholder="Your name"
+        >
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label>Email</label>
+
+        <input
+          type="email"
+          id="registerEmail"
+          placeholder="you@example.com"
+        >
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label>Password</label>
+
+        <input
+          type="password"
+          id="registerPassword"
+          placeholder="Minimum 8 characters"
+        >
+
+      </div>
+
+
+      <button
+        class="btn-primary"
+        onclick="register()"
+      >
+        Create Account
+      </button>
+
+
+      <div class="auth-switch">
+
+        Already have an account?
+
+        <button
+          onclick="showLogin()"
+        >
+          Login
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- ======================================================
+     APPLICATION
+====================================================== -->
+
+<div class="app" id="app">
+
+
+  <!-- SIDEBAR -->
+
+  <aside class="sidebar" id="sidebar">
+
+    <div class="sidebar-logo">
+      Dream <span>Ladders</span>
+    </div>
+
+
+    <button
+      class="nav-item active"
+      onclick="showPage('dashboard', this)"
+    >
+      📊 Dashboard
+    </button>
+
+
+    <button
+      class="nav-item"
+      onclick="showPage('tasks', this)"
+    >
+      📋 Tasks
+    </button>
+
+
+    <button
+      class="nav-item"
+      onclick="showPage('profile', this)"
+    >
+      👤 Profile
+    </button>
+
+
+    <button
+      class="nav-item"
+      id="adminNav"
+      style="display:none"
+      onclick="showPage('users', this)"
+    >
+      🛡️ Users
+    </button>
+
+
+    <div class="sidebar-bottom">
+
+      <button
+        class="logout"
+        onclick="logout()"
+      >
+        Logout
+      </button>
+
+    </div>
+
+  </aside>
+
+
+  <!-- MAIN -->
+
+  <main class="main">
+
+
+    <!-- TOPBAR -->
+
+    <header class="topbar">
+
+      <div>
+
+        <button
+          class="mobile-menu"
+          onclick="toggleSidebar()"
+        >
+          ☰
+        </button>
+
+        <span
+          class="page-title"
+          id="pageTitle"
+        >
+          Dashboard
+        </span>
+
+      </div>
+
+
+      <div class="user-info">
+
+        <div class="user-name">
+
+          <strong id="topUserName">
+            User
+          </strong>
+
+          <small
+            id="topUserRole"
+            style="display:block;color:#64748b"
+          >
+            User
+          </small>
+
+        </div>
+
+
+        <div
+          class="avatar"
+          id="avatar"
+        >
+          U
+        </div>
+
+      </div>
+
+    </header>
+
+
+    <div class="content">
+
+
+      <!-- ==================================================
+           DASHBOARD
+      ================================================== -->
+
+      <section
+        class="page active"
+        id="dashboard"
+      >
+
+        <div class="stats">
+
+          <div class="stat-card">
+
+            <div class="stat-title">
+              Total Tasks
+            </div>
+
+            <div
+              class="stat-value"
+              id="statTotal"
+            >
+              0
+            </div>
+
+          </div>
+
+
+          <div class="stat-card">
+
+            <div class="stat-title">
+              Pending
+            </div>
+
+            <div
+              class="stat-value"
+              id="statPending"
+            >
+              0
+            </div>
+
+          </div>
+
+
+          <div class="stat-card">
+
+            <div class="stat-title">
+              In Progress
+            </div>
+
+            <div
+              class="stat-value"
+              id="statProgress"
+            >
+              0
+            </div>
+
+          </div>
+
+
+          <div class="stat-card">
+
+            <div class="stat-title">
+              Completed
+            </div>
+
+            <div
+              class="stat-value"
+              id="statCompleted"
+            >
+              0
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="card">
+
+          <div class="card-header">
+
+            <div class="card-title">
+              Recent Tasks
+            </div>
+
+            <button
+              class="btn-primary"
+              style="width:auto"
+              onclick="showPageById('tasks')"
+            >
+              View Tasks
+            </button>
+
+          </div>
+
+          <div
+            class="task-grid"
+            id="dashboardTasks"
+          ></div>
+
+        </div>
+
+      </section>
+
+
+      <!-- ==================================================
+           TASKS
+      ================================================== -->
+
+      <section
+        class="page"
+        id="tasks"
+      >
+
+        <div class="card">
+
+          <div class="card-header">
+
+            <div>
+
+              <div class="card-title">
+                Tasks
+              </div>
+
+              <div
+                style="color:#64748b;font-size:13px;margin-top:4px"
+              >
+                Manage your ERP tasks
+              </div>
+
+            </div>
+
+
+            <button
+              class="btn-primary"
+              style="width:auto"
+              onclick="openCreateTaskModal()"
+            >
+              + Create Task
+            </button>
+
+          </div>
+
+
+          <div
+            class="task-grid"
+            id="taskList"
+          ></div>
+
+        </div>
+
+      </section>
+
+
+      <!-- ==================================================
+           PROFILE
+      ================================================== -->
+
+      <section
+        class="page"
+        id="profile"
+      >
+
+        <div class="card">
+
+          <div class="card-title">
+            My Profile
+          </div>
+
+          <br>
+
+          <div class="form-group">
+
+            <label>Name</label>
+
+            <input
+              id="profileName"
+              readonly
+            >
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>Email</label>
+
+            <input
+              id="profileEmail"
+              readonly
+            >
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>Role</label>
+
+            <input
+              id="profileRole"
+              readonly
+            >
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>Status</label>
+
+            <input
+              id="profileStatus"
+              readonly
+            >
+
+          </div>
+
+        </div>
+
+
+        <div class="card">
+
+          <div class="card-title">
+            Change Password
+          </div>
+
+          <br>
+
+          <div id="passwordMessage"></div>
+
+
+          <div class="form-group">
+
+            <label>Current Password</label>
+
+            <input
+              type="password"
+              id="oldPassword"
+            >
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>New Password</label>
+
+            <input
+              type="password"
+              id="newPassword"
+            >
+
+          </div>
+
+
+          <button
+            class="btn-primary"
+            style="width:auto"
+            onclick="changePassword()"
+          >
+            Change Password
+          </button>
+
+        </div>
+
+      </section>
+
+
+      <!-- ==================================================
+           USERS
+      ================================================== -->
+
+      <section
+        class="page"
+        id="users"
+      >
+
+        <div class="card">
+
+          <div class="card-header">
+
+            <div class="card-title">
+              User Management
+            </div>
+
+            <button
+              class="btn-secondary"
+              onclick="loadUsers()"
+            >
+              Refresh
+            </button>
+
+          </div>
+
+
+          <div class="table-container">
+
+            <table>
+
+              <thead>
+
+                <tr>
+
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Role</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+
+                </tr>
+
+              </thead>
+
+              <tbody id="usersTable">
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </div>
+
+      </section>
+
+    </div>
+
+  </main>
+
+</div>
+
+
+<!-- ======================================================
+     TASK MODAL
+====================================================== -->
+
+<div
+  class="modal"
+  id="taskModal"
+>
+
+  <div class="modal-box">
+
+    <div class="modal-header">
+
+      <div
+        class="card-title"
+        id="taskModalTitle"
+      >
+        Create Task
+      </div>
+
+      <button
+        class="close"
+        onclick="closeTaskModal()"
+      >
+        ×
+      </button>
+
+    </div>
+
+
+    <div id="taskMessage"></div>
+
+
+    <input
+      type="hidden"
+      id="editTaskId"
+    >
+
+
+    <div class="form-group">
+
+      <label>Task Title *</label>
+
+      <input
+        id="taskTitle"
+        placeholder="Enter task title"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label>Description</label>
+
+      <textarea
+        id="taskDescription"
+        placeholder="Task description"
+      ></textarea>
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label>Assign To</label>
+
+      <select id="taskAssignedTo">
+
+        <option value="">
+          Unassigned
+        </option>
+
+      </select>
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label>Priority</label>
+
+      <select id="taskPriority">
+
+        <option value="Low">
+          Low
+        </option>
+
+        <option
+          value="Medium"
+          selected
+        >
+          Medium
+        </option>
+
+        <option value="High">
+          High
+        </option>
+
+        <option value="Urgent">
+          Urgent
+        </option>
+
+      </select>
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label>Status</label>
+
+      <select id="taskStatus">
+
+        <option value="Pending">
+          Pending
+        </option>
+
+        <option value="In Progress">
+          In Progress
+        </option>
+
+        <option value="Completed">
+          Completed
+        </option>
+
+        <option value="Cancelled">
+          Cancelled
+        </option>
+
+      </select>
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label>Due Date</label>
+
+      <input
+        type="date"
+        id="taskDueDate"
+      >
+
+    </div>
+
+
+    <button
+      class="btn-primary"
+      onclick="saveTask()"
+    >
+      Save Task
+    </button>
+
+  </div>
+
+</div>
+
+
+<!-- ======================================================
+     JAVASCRIPT
+====================================================== -->
+
+<script>
+
+/* =========================================================
+   CONFIG
+========================================================= */
+
+/*
+ * IMPORTANT:
+ *
+ * Replace this with your deployed Apps Script
+ * Web App URL ending with /exec
+ */
+
+const API_URL =
+  "YOUR_APPS_SCRIPT_WEB_APP_URL_HERE";
+
+
+/* =========================================================
+   GLOBAL STATE
+========================================================= */
+
+let token =
+  localStorage.getItem("dreamLaddersToken") || "";
+
+let currentUser = null;
+
+let tasks = [];
+
+let users = [];
+
+
+/* =========================================================
+   API REQUEST
+========================================================= */
+
+async function api(action, data = {}) {
+
+  const payload = {
+
+    action: action,
+
+    ...data
+
+  };
+
+
+  const response =
+    await fetch(
+      API_URL,
+      {
+
+        method: "POST",
+
+        headers: {
+
+          "Content-Type":
+            "text/plain;charset=utf-8"
+
+        },
+
+        body:
+          JSON.stringify(payload)
+
+      }
+    );
+
+
+  const result =
+    await response.json();
+
+
+  return result;
+}
+
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+function showLoading() {
+
+  document
+    .getElementById("loading")
+    .classList.add("show");
+
+}
+
+
+function hideLoading() {
+
+  document
+    .getElementById("loading")
+    .classList.remove("show");
+
+}
+
+
+/* =========================================================
+   AUTH SCREEN
+========================================================= */
+
+function showLogin() {
+
+  document
+    .getElementById("loginForm")
+    .style.display = "block";
+
+
+  document
+    .getElementById("registerForm")
+    .style.display = "none";
+
+}
+
+
+function showRegister() {
+
+  document
+    .getElementById("loginForm")
+    .style.display = "none";
+
+
+  document
+    .getElementById("registerForm")
+    .style.display = "block";
+
+}
+
+
+/* =========================================================
+   LOGIN
+========================================================= */
+
+async function login() {
+
+  const email =
+    document
+      .getElementById("loginEmail")
+      .value
+      .trim();
+
+
+  const password =
+    document
+      .getElementById("loginPassword")
+      .value;
+
+
+  if (!email || !password) {
+
+    showMessage(
+      "loginMessage",
+      "Email and password are required",
+      "error"
+    );
+
+    return;
+  }
+
+
+  showLoading();
+
+
+  try {
+
+    const result =
+      await api(
+        "login",
+        {
+          email,
+          password
+        }
+      );
+
+
+    if (!result.success) {
+
+      showMessage(
+        "loginMessage",
+        result.error ||
+          "Login failed",
+        "error"
+      );
+
+      return;
+    }
+
+
+    token =
+      result.token;
+
+
+    localStorage.setItem(
+      "dreamLaddersToken",
+      token
+    );
+
+
+    currentUser =
+      result.user;
+
+
+    await initializeApp();
+
+
+  } catch (error) {
+
+    showMessage(
+      "loginMessage",
+      "Unable to connect to server",
+      "error"
+    );
+
+    console.error(error);
+
+  } finally {
+
+    hideLoading();
+
+  }
+}
+
+
+/* =========================================================
+   REGISTER
+========================================================= */
+
+async function register() {
+
+  const name =
+    document
+      .getElementById("registerName")
+      .value
+      .trim();
+
+
+  const email =
+    document
+      .getElementById("registerEmail")
+      .value
+      .trim();
+
+
+  const password =
+    document
+      .getElementById("registerPassword")
+      .value;
+
+
+  if (!name || !email || !password) {
+
+    showMessage(
+      "registerMessage",
+      "All fields are required",
+      "error"
+    );
+
+    return;
+  }
+
+
+  showLoading();
+
+
+  try {
+
+    const result =
+      await api(
+        "register",
+        {
+          name,
+          email,
+          password
+        }
+      );
+
+
+    if (!result.success) {
+
+      showMessage(
+        "registerMessage",
+        result.error ||
+          "Registration failed",
+        "error"
+      );
+
+      return;
+    }
+
+
+    showMessage(
+      "registerMessage",
+      "Account created. You can now login.",
+      "success"
+    );
+
+
+    document
+      .getElementById("registerName")
+      .value = "";
+
+
+    document
+      .getElementById("registerEmail")
+      .value = "";
+
+
+    document
+      .getElementById("registerPassword")
+      .value = "";
+
+
+    setTimeout(
+      showLogin,
+      1200
+    );
+
+
+  } catch (error) {
+
+    showMessage(
+      "registerMessage",
+      "Unable to connect to server",
+      "error"
+    );
+
+  } finally {
+
+    hideLoading();
+
+  }
+}
+
+
+/* =========================================================
+   INITIALIZE APP
+========================================================= */
+
+async function initializeApp() {
+
+  if (!token) {
+
+    showAuth();
+
+    return;
+  }
+
+
+  showLoading();
+
+
+  try {
+
+    const result =
+      await api(
+        "me",
+        {
+          token
+        }
+      );
+
+
+    if (!result.success) {
+
+      clearSession();
+
+      showAuth();
+
+      return;
+    }
+
+
+    currentUser =
+      result.user;
+
+
+    showApp();
+
+
+    updateUserUI();
+
+
+    await loadTasks();
+
+
+    if (
+      currentUser.role === "Admin"
+    ) {
+
+      document
+        .getElementById("adminNav")
+        .style.display = "block";
+
+      await loadUsers();
+
+    }
+
+
+  } catch (error) {
+
+    console.error(error);
+
+    showAuth();
+
+  } finally {
+
+    hideLoading();
+
+  }
+}
+
+
+/* =========================================================
+   SHOW APP
+========================================================= */
+
+function showApp() {
+
+  document
+    .getElementById("authScreen")
+    .style.display = "none";
+
+
+  document
+    .getElementById("app")
+    .style.display = "block";
+
+}
+
+
+function showAuth() {
+
+  document
+    .getElementById("authScreen")
+    .style.display = "flex";
+
+
+  document
+    .getElementById("app")
+    .style.display = "none";
+
+}
+
+
+/* =========================================================
+   USER UI
+========================================================= */
+
+function updateUserUI() {
+
+  if (!currentUser) return;
+
+
+  document
+    .getElementById("topUserName")
+    .textContent =
+      currentUser.name;
+
+
+  document
+    .getElementById("topUserRole")
+    .textContent =
+      currentUser.role;
+
+
+  document
+    .getElementById("avatar")
+    .textContent =
+      currentUser.name
+        .charAt(0)
+        .toUpperCase();
+
+
+  document
+    .getElementById("profileName")
+    .value =
+      currentUser.name;
+
+
+  document
+    .getElementById("profileEmail")
+    .value =
+      currentUser.email;
+
+
+  document
+    .getElementById("profileRole")
+    .value =
+      currentUser.role;
+
+
+  document
+    .getElementById("profileStatus")
+    .value =
+      currentUser.status;
+
+}
+
+
+/* =========================================================
+   TASKS
+========================================================= */
+
+async function loadTasks() {
+
+  try {
+
+    const result =
+      await api(
+        "getTasks",
+        {
+          token
+        }
+      );
+
+
+    if (!result.success) {
+
+      if (
+        result.error
+          .toLowerCase()
+          .includes("session")
+      ) {
+
+        clearSession();
+
+        showAuth();
+
+      }
+
+      return;
+    }
+
+
+    tasks =
+      result.tasks || [];
+
+
+    renderTasks();
+
+
+    updateDashboard();
+
+
+  } catch (error) {
+
+    console.error(
+      "Load tasks error:",
+      error
+    );
+
+  }
+}
+
+
+/* =========================================================
+   RENDER TASKS
+========================================================= */
+
+function renderTasks() {
+
+  const container =
+    document
+      .getElementById("taskList");
+
+
+  container.innerHTML = "";
+
+
+  if (!tasks.length) {
+
+    container.innerHTML = `
+
+      <div
+        style="
+          grid-column:1/-1;
+          text-align:center;
+          padding:50px;
+          color:#64748b;
+        "
+      >
+
+        <div style="font-size:40px">
+          📋
+        </div>
+
+        <div style="margin-top:10px">
+          No tasks found
+        </div>
+
+      </div>
+
+    `;
+
+    renderDashboardTasks();
+
+    return;
+  }
+
+
+  tasks.forEach(
+    task => {
+
+      container
+        .appendChild(
+          createTaskCard(task)
+        );
+
+    }
+  );
+
+
+  renderDashboardTasks();
+
+}
+
+
+/* =========================================================
+   TASK CARD
+========================================================= */
+
+function createTaskCard(task) {
+
+  const card =
+    document.createElement("div");
+
+
+  card.className =
+    "task-card";
+
+
+  const priorityClass =
+    "priority-" +
+    String(task.priority)
+      .toLowerCase();
+
+
+  let statusClass =
+    "status-pending";
+
+
+  if (
+    task.status === "In Progress"
+  ) {
+
+    statusClass =
+      "status-progress";
+
+  }
+
+
+  if (
+    task.status === "Completed"
+  ) {
+
+    statusClass =
+      "status-completed";
+
+  }
+
+
+  if (
+    task.status === "Cancelled"
+  ) {
+
+    statusClass =
+      "status-cancelled";
+
+  }
+
+
+  const due =
+    formatDate(task.dueDate);
+
+
+  card.innerHTML = `
+
+    <div class="task-title">
+      ${escapeHtml(task.title)}
+    </div>
+
+    <div class="task-description">
+      ${escapeHtml(
+        task.description || "No description"
+      )}
+    </div>
+
+    <div class="badges">
+
+      <span
+        class="badge ${priorityClass}"
+      >
+        ${escapeHtml(task.priority)}
+      </span>
+
+      <span
+        class="badge ${statusClass}"
+      >
+        ${escapeHtml(task.status)}
+      </span>
+
+    </div>
+
+    <div
+      style="
+        font-size:12px;
+        color:#64748b;
+        margin-bottom:12px;
+      "
+    >
+
+      Due:
+      ${due || "No due date"}
+
+    </div>
+
+    <div class="task-actions">
+
+      <button
+        class="btn-secondary"
+        onclick="editTask('${task.taskId}')"
+      >
+        Edit
+      </button>
+
+      ${
+        currentUser.role === "Admin" ||
+        String(task.createdBy) ===
+        String(currentUser.userId)
+          ?
+
+        `
+        <button
+          class="btn-danger"
+          onclick="deleteTask('${task.taskId}')"
+        >
+          Delete
+        </button>
+        `
+
+        :
+
+        ""
+      }
+
+    </div>
+
+  `;
+
+
+  return card;
+}
+
+
+/* =========================================================
+   DASHBOARD
+========================================================= */
+
+function updateDashboard() {
+
+  const total =
+    tasks.length;
+
+
+  const pending =
+    tasks.filter(
+      t => t.status === "Pending"
+    ).length;
+
+
+  const progress =
+    tasks.filter(
+      t => t.status === "In Progress"
+    ).length;
+
+
+  const completed =
+    tasks.filter(
+      t => t.status === "Completed"
+    ).length;
+
+
+  document
+    .getElementById("statTotal")
+    .textContent =
+      total;
+
+
+  document
+    .getElementById("statPending")
+    .textContent =
+      pending;
+
+
+  document
+    .getElementById("statProgress")
+    .textContent =
+      progress;
+
+
+  document
+    .getElementById("statCompleted")
+    .textContent =
+      completed;
+
+
+  renderDashboardTasks();
+
+}
+
+
+function renderDashboardTasks() {
+
+  const container =
+    document
+      .getElementById("dashboardTasks");
+
+
+  container.innerHTML = "";
+
+
+  tasks
+    .slice(0, 4)
+    .forEach(
+      task => {
+
+        container
+          .appendChild(
+            createTaskCard(task)
+          );
+
+      }
+    );
+
+}
+
+
+/* =========================================================
+   CREATE TASK MODAL
+========================================================= */
+
+function openCreateTaskModal() {
+
+  document
+    .getElementById("taskModalTitle")
+    .textContent =
+      "Create Task";
+
+
+  document
+    .getElementById("editTaskId")
+    .value = "";
+
+
+  document
+    .getElementById("taskTitle")
+    .value = "";
+
+
+  document
+    .getElementById("taskDescription")
+    .value = "";
+
+
+  document
+    .getElementById("taskPriority")
+    .value = "Medium";
+
+
+  document
+    .getElementById("taskStatus")
+    .value = "Pending";
+
+
+  document
+    .getElementById("taskDueDate")
+    .value = "";
+
+
+  populateAssignedUsers();
+
+
+  document
+    .getElementById("taskModal")
+    .classList.add("show");
+
+}
+
+
+function closeTaskModal() {
+
+  document
+    .getElementById("taskModal")
+    .classList.remove("show");
+
+}
+
+
+/* =========================================================
+   POPULATE USERS
+========================================================= */
+
+function populateAssignedUsers() {
+
+  const select =
+    document
+      .getElementById(
+        "taskAssignedTo"
+      );
+
+
+  select.innerHTML = `
+
+    <option value="">
+      Unassigned
+    </option>
+
+  `;
+
+
+  users
+    .filter(
+      user =>
+        user.status === "Active"
+    )
+    .forEach(
+      user => {
+
+        const option =
+          document.createElement(
+            "option"
+          );
+
+
+        option.value =
+          user.userId;
+
+
+        option.textContent =
+          user.name +
+          " (" +
+          user.email +
+          ")";
+
+
+        select.appendChild(
+          option
+        );
+
+      }
+    );
+
+}
+
+
+/* =========================================================
+   SAVE TASK
+========================================================= */
+
+async function saveTask() {
+
+  const taskId =
+    document
+      .getElementById("editTaskId")
+      .value;
+
+
+  const title =
+    document
+      .getElementById("taskTitle")
+      .value
+      .trim();
+
+
+  const description =
+    document
+      .getElementById("taskDescription")
+      .value
+      .trim();
+
+
+  const assignedTo =
+    document
+      .getElementById("taskAssignedTo")
+      .value;
+
+
+  const priority =
+    document
+      .getElementById("taskPriority")
+      .value;
+
+
+  const status =
+    document
+      .getElementById("taskStatus")
+      .value;
+
+
+  const dueDate =
+    document
+      .getElementById("taskDueDate")
+      .value;
+
+
+  if (!title) {
+
+    showMessage(
+      "taskMessage",
+      "Task title is required",
+      "error"
+    );
+
+    return;
+  }
+
+
+  showLoading();
+
+
+  try {
+
+    let result;
+
+
+    if (taskId) {
+
+      result =
+        await api(
+          "updateTask",
+          {
+
+            token,
+
+            taskId,
+
+            title,
+
+            description,
+
+            assignedTo,
+
+            priority,
+
+            status,
+
+            dueDate
+
+          }
+        );
+
+    } else {
+
+      result =
+        await api(
+          "createTask",
+          {
+
+            token,
+
+            title,
+
+            description,
+
+            assignedTo,
+
+            priority,
+
+            status,
+
+            dueDate
+
+          }
+        );
+
+    }
+
+
+    if (!result.success) {
+
+      showMessage(
+        "taskMessage",
+        result.error ||
+          "Unable to save task",
+        "error"
+      );
+
+      return;
+    }
+
+
+    closeTaskModal();
+
+
+    await loadTasks();
+
+
+  } catch (error) {
+
+    console.error(error);
+
+    showMessage(
+      "taskMessage",
+      "Server connection failed",
+      "error"
+    );
+
+  } finally {
+
+    hideLoading();
+
+  }
+}
+
+
+/* =========================================================
+   EDIT TASK
+========================================================= */
+
+function editTask(taskId) {
+
+  const task =
+    tasks.find(
+      t =>
+        String(t.taskId) ===
+        String(taskId)
+    );
+
+
+  if (!task) return;
+
+
+  document
+    .getElementById("taskModalTitle")
+    .textContent =
+      "Edit Task";
+
+
+  document
+    .getElementById("editTaskId")
+    .value =
+      task.taskId;
+
+
+  document
+    .getElementById("taskTitle")
+    .value =
+      task.title;
+
+
+  document
+    .getElementById("taskDescription")
+    .value =
+      task.description || "";
+
+
+  document
+    .getElementById("taskPriority")
+    .value =
+      task.priority;
+
+
+  document
+    .getElementById("taskStatus")
+    .value =
+      task.status;
+
+
+  document
+    .getElementById("taskDueDate")
+    .value =
+      dateForInput(task.dueDate);
+
+
+  populateAssignedUsers();
+
+
+  document
+    .getElementById("taskAssignedTo")
+    .value =
+      task.assignedTo || "";
+
+
+  document
+    .getElementById("taskModal")
+    .classList.add("show");
+
+}
+
+
+/* =========================================================
+   DELETE TASK
+========================================================= */
+
+async function deleteTask(taskId) {
+
+  if (
+    !confirm(
+      "Are you sure you want to delete this task?"
+    )
+  ) {
+
+    return;
+  }
+
+
+  showLoading();
+
+
+  try {
+
+    const result =
+      await api(
+        "deleteTask",
+        {
+
+          token,
+
+          taskId
+
+        }
+      );
+
+
+    if (!result.success) {
+
+      alert(
+        result.error ||
+        "Unable to delete task"
+      );
+
+      return;
+    }
+
+
+    await loadTasks();
+
+
+  } catch (error) {
+
+    console.error(error);
+
+    alert(
+      "Server connection failed"
+    );
+
+  } finally {
+
+    hideLoading();
+
+  }
+}
+
+
+/* =========================================================
+   USERS
+========================================================= */
+
+async function loadUsers() {
+
+  if (
+    !currentUser ||
+    currentUser.role !== "Admin"
+  ) {
+
+    return;
+  }
+
+
+  try {
+
+    const result =
+      await api(
+        "adminUsers",
+        {
+          token
+        }
+      );
+
+
+    if (!result.success) {
+
+      console.error(
+        result.error
+      );
+
+      return;
+    }
+
+
+    users =
+      result.users || [];
+
+
+    renderUsers();
+
+
+    populateAssignedUsers();
+
+
+  } catch (error) {
+
+    console.error(error);
+
+  }
+}
+
+
+/* =========================================================
+   RENDER USERS
+========================================================= */
+
+function renderUsers() {
+
+  const tbody =
+    document
+      .getElementById(
+        "usersTable"
+      );
+
+
+  tbody.innerHTML = "";
+
+
+  users.forEach(
+    user => {
+
+      const tr =
+        document.createElement(
+          "tr"
+        );
+
+
+      tr.innerHTML = `
+
+        <td>
+          ${escapeHtml(user.name)}
+        </td>
+
+        <td>
+          ${escapeHtml(user.email)}
+        </td>
+
+        <td>
+
+          <select
+            onchange="
+              changeRole(
+                '${user.userId}',
+                this.value
+              )
+            "
+          >
+
+            <option
+              value="User"
+              ${
+                user.role === "User"
+                  ? "selected"
+                  : ""
+              }
+            >
+              User
+            </option>
+
+            <option
+              value="Admin"
+              ${
+                user.role === "Admin"
+                  ? "selected"
+                  : ""
+              }
+            >
+              Admin
+            </option>
+
+          </select>
+
+        </td>
+
+        <td>
+
+          <span
+            class="badge ${
+              user.status === "Active"
+                ? "status-completed"
+                : "status-cancelled"
+            }"
+          >
+            ${escapeHtml(user.status)}
+          </span>
+
+        </td>
+
+        <td>
+
+          ${
+            String(user.userId) ===
+            String(currentUser.userId)
+
+            ?
+
+            ""
+
+            :
+
+            `
+            <button
+              class="${
+                user.status === "Active"
+                  ? "btn-danger"
+                  : "btn-success"
+              }"
+              onclick="
+                changeStatus(
+                  '${user.userId}',
+                  '${
+                    user.status === "Active"
+                      ? "Suspended"
+                      : "Active"
+                  }'
+                )
+              "
+            >
+              ${
+                user.status === "Active"
+                  ? "Suspend"
+                  : "Activate"
+              }
+            </button>
+            `
+
+          }
+
+        </td>
+
+      `;
+
+
+      tbody.appendChild(
+        tr
+      );
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   CHANGE ROLE
+========================================================= */
+
+async function changeRole(
+  userId,
+  role
+) {
+
+  const result =
+    await api(
+      "changeUserRole",
+      {
+
+        token,
+
+        userId,
+
+        role
+
+      }
+    );
+
+
+  if (!result.success) {
+
+    alert(
+      result.error ||
+      "Unable to change role"
+    );
+
+  }
+
+
+  await loadUsers();
+
+}
+
+
+/* =========================================================
+   CHANGE STATUS
+========================================================= */
+
+async function changeStatus(
+  userId,
+  status
+) {
+
+  if (
+    !confirm(
+      "Change this user's status to " +
+      status +
+      "?"
+    )
+  ) {
+
+    await loadUsers();
+
+    return;
+  }
+
+
+  const result =
+    await api(
+      "changeUserStatus",
+      {
+
+        token,
+
+        userId,
+
+        status
+
+      }
+    );
+
+
+  if (!result.success) {
+
+    alert(
+      result.error ||
+      "Unable to change status"
+    );
+
+  }
+
+
+  await loadUsers();
+
+}
+
+
+/* =========================================================
+   CHANGE PASSWORD
+========================================================= */
+
+async function changePassword() {
+
+  const oldPassword =
+    document
+      .getElementById(
+        "oldPassword"
+      )
+      .value;
+
+
+  const newPassword =
+    document
+      .getElementById(
+        "newPassword"
+      )
+      .value;
+
+
+  if (
+    !oldPassword ||
+    !newPassword
+  ) {
+
+    showMessage(
+      "passwordMessage",
+      "Both passwords are required",
+      "error"
+    );
+
+    return;
+  }
+
+
+  showLoading();
+
+
+  try {
+
+    const result =
+      await api(
+        "changePassword",
+        {
+
+          token,
+
+          oldPassword,
+
+          newPassword
+
+        }
+      );
+
+
+    if (!result.success) {
+
+      showMessage(
+        "passwordMessage",
+        result.error ||
+          "Unable to change password",
+        "error"
+      );
+
+      return;
+    }
+
+
+    showMessage(
+      "passwordMessage",
+      result.message,
+      "success"
+    );
+
+
+    document
+      .getElementById(
+        "oldPassword"
+      )
+      .value = "";
+
+
+    document
+      .getElementById(
+        "newPassword"
+      )
+      .value = "";
+
+
+    /*
+     * Backend revokes all sessions.
+     */
+
+    setTimeout(
+      () => {
+
+        clearSession();
+
+        showAuth();
+
+      },
+      1500
+    );
+
+
+  } catch (error) {
+
+    console.error(error);
+
+    showMessage(
+      "passwordMessage",
+      "Server connection failed",
+      "error"
+    );
+
+  } finally {
+
+    hideLoading();
+
+  }
+}
+
+
+/* =========================================================
+   LOGOUT
+========================================================= */
+
+async function logout() {
+
+  try {
+
+    if (token) {
+
+      await api(
+        "logout",
+        {
+          token
+        }
+      );
+
+    }
+
+  } catch (error) {
+
+    console.error(error);
+
+  }
+
+
+  clearSession();
+
+  showAuth();
+
+}
+
+
+function clearSession() {
+
+  token = "";
+
+  currentUser = null;
+
+  tasks = [];
+
+  users = [];
+
+
+  localStorage.removeItem(
+    "dreamLaddersToken"
+  );
+
+}
+
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+function showPage(
+  pageId,
+  element
+) {
+
+  document
+    .querySelectorAll(".page")
+    .forEach(
+      page =>
+        page.classList.remove(
+          "active"
+        )
+    );
+
+
+  const page =
+    document.getElementById(
+      pageId
+    );
+
+
+  if (!page) return;
+
+
+  page.classList.add(
+    "active"
+  );
+
+
+  document
+    .querySelectorAll(".nav-item")
+    .forEach(
+      item =>
+        item.classList.remove(
+          "active"
+        )
+    );
+
+
+  if (element) {
+
+    element.classList.add(
+      "active"
+    );
+
+  }
+
+
+  const titles = {
+
+    dashboard: "Dashboard",
+
+    tasks: "Tasks",
+
+    profile: "Profile",
+
+    users: "Users"
+
+  };
+
+
+  document
+    .getElementById("pageTitle")
+    .textContent =
+      titles[pageId] ||
+      "Dream Ladders";
+
+
+  if (
+    pageId === "users"
+  ) {
+
+    loadUsers();
+
+  }
+
+
+  if (
+    pageId === "tasks"
+  ) {
+
+    loadTasks();
+
+  }
+
+
+  if (
+    window.innerWidth <= 850
+  ) {
+
+    document
+      .getElementById("sidebar")
+      .classList.remove(
+        "open"
+      );
+
+  }
+
+}
+
+
+function showPageById(
+  pageId
+) {
+
+  const button =
+    document.querySelector(
+      `.nav-item[onclick*="'${pageId}'"]`
+    );
+
+
+  showPage(
+    pageId,
+    button
+  );
+
+}
+
+
+function toggleSidebar() {
+
+  document
+    .getElementById("sidebar")
+    .classList.toggle(
+      "open"
+    );
+
+}
+
+
+/* =========================================================
+   MESSAGES
+========================================================= */
+
+function showMessage(
+  elementId,
+  message,
+  type
+) {
+
+  const element =
+    document.getElementById(
+      elementId
+    );
+
+
+  element.innerHTML = `
+
+    <div class="${type}">
+      ${escapeHtml(message)}
+    </div>
+
+  `;
+
+
+  setTimeout(
+    () => {
+
+      element.innerHTML = "";
+
+    },
+    5000
+  );
+
+}
+
+
+/* =========================================================
+   DATE
+========================================================= */
+
+function formatDate(value) {
+
+  if (!value) {
+    return "";
+  }
+
+
+  const date =
+    new Date(value);
+
+
+  if (
+    isNaN(date.getTime())
+  ) {
+
+    return String(value);
+
+  }
+
+
+  return date.toLocaleDateString();
+
+}
+
+
+function dateForInput(value) {
+
+  if (!value) {
+    return "";
+  }
+
+
+  const date =
+    new Date(value);
+
+
+  if (
+    isNaN(date.getTime())
+  ) {
+
+    return "";
+  }
+
+
+  return date
+    .toISOString()
+    .split("T")[0];
+
+}
+
+
+/* =========================================================
+   HTML ESCAPE
+========================================================= */
+
+function escapeHtml(value) {
+
+  return String(
+    value ?? ""
+  )
+
+    .replace(
+      /&/g,
+      "&amp;"
+    )
+
+    .replace(
+      /</g,
+      "&lt;"
+    )
+
+    .replace(
+      />/g,
+      "&gt;"
+    )
+
+    .replace(
+      /"/g,
+      "&quot;"
+    )
+
+    .replace(
+      /'/g,
+      "&#039;"
+    );
+
+}
+
+
+/* =========================================================
+   START
+========================================================= */
+
+document.addEventListener(
+  "DOMContentLoaded",
+  () => {
+
+    initializeApp();
+
+  }
+);
+
+</script>
+
+</body>
+</html>
