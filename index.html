@@ -763,6 +763,15 @@ th {
 
 
     <button
+  class="nav-item"
+  onclick="showPage('accounts', this)"
+>
+  💰 Accounts
+</button>
+    
+
+    
+    <button
       class="nav-item"
       onclick="showPage('profile', this)"
     >
@@ -1008,6 +1017,231 @@ th {
 
       </section>
 
+
+
+
+
+      <!-- ==================================================
+     ACCOUNTS
+================================================== -->
+
+<section
+  class="page"
+  id="accounts"
+>
+
+  <div class="stats">
+
+    <div class="stat-card">
+
+      <div class="stat-title">
+        Total Income
+      </div>
+
+      <div
+        class="stat-value"
+        id="accountTotalIncome"
+        style="color:#15803d"
+      >
+        ₹0
+      </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+      <div class="stat-title">
+        Total Expenses
+      </div>
+
+      <div
+        class="stat-value"
+        id="accountTotalExpense"
+        style="color:#dc2626"
+      >
+        ₹0
+      </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+      <div class="stat-title">
+        Balance
+      </div>
+
+      <div
+        class="stat-value"
+        id="accountBalance"
+        style="color:#2563eb"
+      >
+        ₹0
+      </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+      <div class="stat-title">
+        Transactions
+      </div>
+
+      <div
+        class="stat-value"
+        id="accountTransactionCount"
+      >
+        0
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="card">
+
+    <div class="card-header">
+
+      <div>
+
+        <div class="card-title">
+          Accounts
+        </div>
+
+        <div
+          style="
+            color:#64748b;
+            font-size:13px;
+            margin-top:4px;
+          "
+        >
+          Manage income and expenses
+        </div>
+
+      </div>
+
+
+      <button
+        class="btn-primary"
+        style="width:auto"
+        onclick="openAccountModal()"
+      >
+        + Add Transaction
+      </button>
+
+    </div>
+
+
+    <div
+      style="
+        display:flex;
+        gap:10px;
+        flex-wrap:wrap;
+        margin-bottom:20px;
+      "
+    >
+
+      <input
+        id="accountSearch"
+        placeholder="Search transactions..."
+        oninput="loadAccounts()"
+        style="max-width:250px"
+      >
+
+
+      <select
+        id="accountTypeFilter"
+        onchange="loadAccounts()"
+        style="max-width:180px"
+      >
+
+        <option value="">
+          All Transactions
+        </option>
+
+        <option value="Income">
+          Income
+        </option>
+
+        <option value="Expense">
+          Expense
+        </option>
+
+      </select>
+
+
+      <input
+        type="date"
+        id="accountFromDate"
+        onchange="loadAccounts()"
+      >
+
+
+      <input
+        type="date"
+        id="accountToDate"
+        onchange="loadAccounts()"
+      >
+
+
+      <button
+        class="btn-secondary"
+        onclick="clearAccountFilters()"
+      >
+        Clear
+      </button>
+
+    </div>
+
+
+    <div class="table-container">
+
+      <table>
+
+        <thead>
+
+          <tr>
+
+            <th>ID</th>
+            <th>Date</th>
+            <th>Type</th>
+            <th>Category</th>
+            <th>Description</th>
+            <th>Amount</th>
+            <th>Payment</th>
+            <th>Party</th>
+            <th>Reference</th>
+            <th>Action</th>
+
+          </tr>
+
+        </thead>
+
+
+        <tbody
+          id="accountsTable"
+        >
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+
+
+      
+
+
+      
 
       <!-- ==================================================
            PROFILE
