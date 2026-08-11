@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -19,9 +21,9 @@ body {
   color: #172033;
 }
 
-/* =========================
-   LOGIN / REGISTER
-========================= */
+/* =========================================================
+   AUTH
+========================================================= */
 
 .auth-screen {
   min-height: 100vh;
@@ -29,13 +31,12 @@ body {
   align-items: center;
   justify-content: center;
   padding: 20px;
-  background:
-    linear-gradient(
-      135deg,
-      #111827,
-      #1e293b,
-      #334155
-    );
+  background: linear-gradient(
+    135deg,
+    #111827,
+    #1e293b,
+    #334155
+  );
 }
 
 .auth-card {
@@ -132,11 +133,6 @@ button {
   color: #166534;
 }
 
-.btn-warning {
-  background: #fef3c7;
-  color: #92400e;
-}
-
 .auth-switch {
   text-align: center;
   margin-top: 20px;
@@ -167,9 +163,9 @@ button {
   font-size: 14px;
 }
 
-/* =========================
+/* =========================================================
    APP
-========================= */
+========================================================= */
 
 .app {
   display: none;
@@ -275,14 +271,13 @@ button {
   display: block;
 }
 
-/* =========================
+/* =========================================================
    CARDS
-========================= */
+========================================================= */
 
 .stats {
   display: grid;
-  grid-template-columns:
-    repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 18px;
   margin-bottom: 25px;
 }
@@ -325,14 +320,16 @@ button {
   font-weight: 700;
 }
 
-/* =========================
+/* =========================================================
    TASKS
-========================= */
+========================================================= */
 
 .task-grid {
   display: grid;
-  grid-template-columns:
-    repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(280px, 1fr)
+  );
   gap: 18px;
 }
 
@@ -416,9 +413,9 @@ button {
   flex-wrap: wrap;
 }
 
-/* =========================
+/* =========================================================
    TABLE
-========================= */
+========================================================= */
 
 .table-container {
   overflow-x: auto;
@@ -435,6 +432,7 @@ td {
   padding: 13px;
   border-bottom: 1px solid #e5e7eb;
   font-size: 13px;
+  white-space: nowrap;
 }
 
 th {
@@ -442,9 +440,9 @@ th {
   font-weight: 700;
 }
 
-/* =========================
+/* =========================================================
    MODAL
-========================= */
+========================================================= */
 
 .modal {
   display: none;
@@ -482,9 +480,9 @@ th {
   font-size: 18px;
 }
 
-/* =========================
+/* =========================================================
    LOADING
-========================= */
+========================================================= */
 
 .loading {
   position: fixed;
@@ -515,15 +513,16 @@ th {
   }
 }
 
-/* =========================
+/* =========================================================
    MOBILE
-========================= */
+========================================================= */
 
 .mobile-menu {
   display: none;
+  background: #f1f5f9;
 }
 
-@media(max-width: 850px) {
+@media(max-width:850px) {
 
   .sidebar {
     transform: translateX(-100%);
@@ -539,8 +538,7 @@ th {
   }
 
   .mobile-menu {
-    display: block;
-    background: #f1f5f9;
+    display: inline-block;
   }
 
   .stats {
@@ -551,9 +549,10 @@ th {
   .content {
     padding: 18px;
   }
+
 }
 
-@media(max-width: 500px) {
+@media(max-width:500px) {
 
   .stats {
     grid-template-columns: 1fr;
@@ -570,9 +569,11 @@ th {
   .auth-card {
     padding: 25px;
   }
+
 }
 
 </style>
+
 </head>
 
 <body>
@@ -581,16 +582,22 @@ th {
      LOADING
 ====================================================== -->
 
-<div class="loading" id="loading">
+<div
+  class="loading"
+  id="loading"
+>
   <div class="spinner"></div>
 </div>
 
 
 <!-- ======================================================
-     AUTH SCREEN
+     AUTH
 ====================================================== -->
 
-<div class="auth-screen" id="authScreen">
+<div
+  class="auth-screen"
+  id="authScreen"
+>
 
   <div class="auth-card">
 
@@ -621,7 +628,6 @@ th {
 
       </div>
 
-
       <div class="form-group">
 
         <label>Password</label>
@@ -634,7 +640,6 @@ th {
 
       </div>
 
-
       <button
         class="btn-primary"
         onclick="login()"
@@ -642,14 +647,11 @@ th {
         Login
       </button>
 
-
       <div class="auth-switch">
 
         Don't have an account?
 
-        <button
-          onclick="showRegister()"
-        >
+        <button onclick="showRegister()">
           Create account
         </button>
 
@@ -660,7 +662,10 @@ th {
 
     <!-- REGISTER -->
 
-    <div id="registerForm" style="display:none">
+    <div
+      id="registerForm"
+      style="display:none"
+    >
 
       <div id="registerMessage"></div>
 
@@ -676,7 +681,6 @@ th {
 
       </div>
 
-
       <div class="form-group">
 
         <label>Email</label>
@@ -688,7 +692,6 @@ th {
         >
 
       </div>
-
 
       <div class="form-group">
 
@@ -702,7 +705,6 @@ th {
 
       </div>
 
-
       <button
         class="btn-primary"
         onclick="register()"
@@ -710,14 +712,11 @@ th {
         Create Account
       </button>
 
-
       <div class="auth-switch">
 
         Already have an account?
 
-        <button
-          onclick="showLogin()"
-        >
+        <button onclick="showLogin()">
           Login
         </button>
 
@@ -734,17 +733,21 @@ th {
      APPLICATION
 ====================================================== -->
 
-<div class="app" id="app">
-
+<div
+  class="app"
+  id="app"
+>
 
   <!-- SIDEBAR -->
 
-  <aside class="sidebar" id="sidebar">
+  <aside
+    class="sidebar"
+    id="sidebar"
+  >
 
     <div class="sidebar-logo">
       Dream <span>Ladders</span>
     </div>
-
 
     <button
       class="nav-item active"
@@ -753,7 +756,6 @@ th {
       📊 Dashboard
     </button>
 
-
     <button
       class="nav-item"
       onclick="showPage('tasks', this)"
@@ -761,23 +763,21 @@ th {
       📋 Tasks
     </button>
 
+    <!-- ACCOUNTS -->
 
     <button
-  class="nav-item"
-  onclick="showPage('accounts', this)"
->
-  💰 Accounts
-</button>
-    
+      class="nav-item"
+      onclick="showPage('accounts', this)"
+    >
+      💰 Accounts
+    </button>
 
-    
     <button
       class="nav-item"
       onclick="showPage('profile', this)"
     >
       👤 Profile
     </button>
-
 
     <button
       class="nav-item"
@@ -787,7 +787,6 @@ th {
     >
       🛡️ Users
     </button>
-
 
     <div class="sidebar-bottom">
 
@@ -806,9 +805,6 @@ th {
   <!-- MAIN -->
 
   <main class="main">
-
-
-    <!-- TOPBAR -->
 
     <header class="topbar">
 
@@ -830,7 +826,6 @@ th {
 
       </div>
 
-
       <div class="user-info">
 
         <div class="user-name">
@@ -847,7 +842,6 @@ th {
           </small>
 
         </div>
-
 
         <div
           class="avatar"
@@ -890,7 +884,6 @@ th {
 
           </div>
 
-
           <div class="stat-card">
 
             <div class="stat-title">
@@ -906,7 +899,6 @@ th {
 
           </div>
 
-
           <div class="stat-card">
 
             <div class="stat-title">
@@ -921,7 +913,6 @@ th {
             </div>
 
           </div>
-
 
           <div class="stat-card">
 
@@ -989,13 +980,16 @@ th {
               </div>
 
               <div
-                style="color:#64748b;font-size:13px;margin-top:4px"
+                style="
+                  color:#64748b;
+                  font-size:13px;
+                  margin-top:4px;
+                "
               >
                 Manage your ERP tasks
               </div>
 
             </div>
-
 
             <button
               class="btn-primary"
@@ -1007,7 +1001,6 @@ th {
 
           </div>
 
-
           <div
             class="task-grid"
             id="taskList"
@@ -1018,230 +1011,214 @@ th {
       </section>
 
 
-
-
-
       <!-- ==================================================
-     ACCOUNTS
-================================================== -->
+           ACCOUNTS
+      ================================================== -->
 
-<section
-  class="page"
-  id="accounts"
->
-
-  <div class="stats">
-
-    <div class="stat-card">
-
-      <div class="stat-title">
-        Total Income
-      </div>
-
-      <div
-        class="stat-value"
-        id="accountTotalIncome"
-        style="color:#15803d"
+      <section
+        class="page"
+        id="accounts"
       >
-        ₹0
-      </div>
 
-    </div>
+        <div class="stats">
 
+          <div class="stat-card">
 
-    <div class="stat-card">
+            <div class="stat-title">
+              Total Income
+            </div>
 
-      <div class="stat-title">
-        Total Expenses
-      </div>
+            <div
+              class="stat-value"
+              id="accountTotalIncome"
+              style="color:#15803d"
+            >
+              ₹0
+            </div>
 
-      <div
-        class="stat-value"
-        id="accountTotalExpense"
-        style="color:#dc2626"
-      >
-        ₹0
-      </div>
-
-    </div>
+          </div>
 
 
-    <div class="stat-card">
+          <div class="stat-card">
 
-      <div class="stat-title">
-        Balance
-      </div>
+            <div class="stat-title">
+              Total Expenses
+            </div>
 
-      <div
-        class="stat-value"
-        id="accountBalance"
-        style="color:#2563eb"
-      >
-        ₹0
-      </div>
+            <div
+              class="stat-value"
+              id="accountTotalExpense"
+              style="color:#dc2626"
+            >
+              ₹0
+            </div>
 
-    </div>
-
-
-    <div class="stat-card">
-
-      <div class="stat-title">
-        Transactions
-      </div>
-
-      <div
-        class="stat-value"
-        id="accountTransactionCount"
-      >
-        0
-      </div>
-
-    </div>
-
-  </div>
+          </div>
 
 
-  <div class="card">
+          <div class="stat-card">
 
-    <div class="card-header">
+            <div class="stat-title">
+              Balance
+            </div>
 
-      <div>
+            <div
+              class="stat-value"
+              id="accountBalance"
+              style="color:#2563eb"
+            >
+              ₹0
+            </div>
 
-        <div class="card-title">
-          Accounts
+          </div>
+
+
+          <div class="stat-card">
+
+            <div class="stat-title">
+              Transactions
+            </div>
+
+            <div
+              class="stat-value"
+              id="accountTransactionCount"
+            >
+              0
+            </div>
+
+          </div>
+
         </div>
 
-        <div
-          style="
-            color:#64748b;
-            font-size:13px;
-            margin-top:4px;
-          "
-        >
-          Manage income and expenses
+
+        <div class="card">
+
+          <div class="card-header">
+
+            <div>
+
+              <div class="card-title">
+                Accounts
+              </div>
+
+              <div
+                style="
+                  color:#64748b;
+                  font-size:13px;
+                  margin-top:4px;
+                "
+              >
+                Manage income and expenses
+              </div>
+
+            </div>
+
+            <button
+              class="btn-primary"
+              style="width:auto"
+              onclick="openAccountModal()"
+            >
+              + Add Transaction
+            </button>
+
+          </div>
+
+
+          <!-- FILTERS -->
+
+          <div
+            style="
+              display:flex;
+              gap:10px;
+              flex-wrap:wrap;
+              margin-bottom:20px;
+            "
+          >
+
+            <input
+              id="accountSearch"
+              placeholder="Search transactions..."
+              oninput="loadAccounts()"
+              style="max-width:250px"
+            >
+
+            <select
+              id="accountTypeFilter"
+              onchange="loadAccounts()"
+              style="max-width:180px"
+            >
+
+              <option value="">
+                All Transactions
+              </option>
+
+              <option value="Income">
+                Income
+              </option>
+
+              <option value="Expense">
+                Expense
+              </option>
+
+            </select>
+
+            <input
+              type="date"
+              id="accountFromDate"
+              onchange="loadAccounts()"
+            >
+
+            <input
+              type="date"
+              id="accountToDate"
+              onchange="loadAccounts()"
+            >
+
+            <button
+              class="btn-secondary"
+              onclick="clearAccountFilters()"
+            >
+              Clear
+            </button>
+
+          </div>
+
+
+          <!-- TABLE -->
+
+          <div class="table-container">
+
+            <table>
+
+              <thead>
+
+                <tr>
+                  <th>ID</th>
+                  <th>Date</th>
+                  <th>Type</th>
+                  <th>Category</th>
+                  <th>Description</th>
+                  <th>Amount</th>
+                  <th>Payment</th>
+                  <th>Party</th>
+                  <th>Reference</th>
+                  <th>Action</th>
+                </tr>
+
+              </thead>
+
+              <tbody
+                id="accountsTable"
+              ></tbody>
+
+            </table>
+
+          </div>
+
         </div>
 
-      </div>
+      </section>
 
-
-      <button
-        class="btn-primary"
-        style="width:auto"
-        onclick="openAccountModal()"
-      >
-        + Add Transaction
-      </button>
-
-    </div>
-
-
-    <div
-      style="
-        display:flex;
-        gap:10px;
-        flex-wrap:wrap;
-        margin-bottom:20px;
-      "
-    >
-
-      <input
-        id="accountSearch"
-        placeholder="Search transactions..."
-        oninput="loadAccounts()"
-        style="max-width:250px"
-      >
-
-
-      <select
-        id="accountTypeFilter"
-        onchange="loadAccounts()"
-        style="max-width:180px"
-      >
-
-        <option value="">
-          All Transactions
-        </option>
-
-        <option value="Income">
-          Income
-        </option>
-
-        <option value="Expense">
-          Expense
-        </option>
-
-      </select>
-
-
-      <input
-        type="date"
-        id="accountFromDate"
-        onchange="loadAccounts()"
-      >
-
-
-      <input
-        type="date"
-        id="accountToDate"
-        onchange="loadAccounts()"
-      >
-
-
-      <button
-        class="btn-secondary"
-        onclick="clearAccountFilters()"
-      >
-        Clear
-      </button>
-
-    </div>
-
-
-    <div class="table-container">
-
-      <table>
-
-        <thead>
-
-          <tr>
-
-            <th>ID</th>
-            <th>Date</th>
-            <th>Type</th>
-            <th>Category</th>
-            <th>Description</th>
-            <th>Amount</th>
-            <th>Payment</th>
-            <th>Party</th>
-            <th>Reference</th>
-            <th>Action</th>
-
-          </tr>
-
-        </thead>
-
-
-        <tbody
-          id="accountsTable"
-        >
-
-        </tbody>
-
-      </table>
-
-    </div>
-
-  </div>
-
-</section>
-
-
-
-
-      
-
-
-      
 
       <!-- ==================================================
            PROFILE
@@ -1271,7 +1248,6 @@ th {
 
           </div>
 
-
           <div class="form-group">
 
             <label>Email</label>
@@ -1283,7 +1259,6 @@ th {
 
           </div>
 
-
           <div class="form-group">
 
             <label>Role</label>
@@ -1294,7 +1269,6 @@ th {
             >
 
           </div>
-
 
           <div class="form-group">
 
@@ -1320,7 +1294,6 @@ th {
 
           <div id="passwordMessage"></div>
 
-
           <div class="form-group">
 
             <label>Current Password</label>
@@ -1332,7 +1305,6 @@ th {
 
           </div>
 
-
           <div class="form-group">
 
             <label>New Password</label>
@@ -1343,7 +1315,6 @@ th {
             >
 
           </div>
-
 
           <button
             class="btn-primary"
@@ -1384,7 +1355,6 @@ th {
 
           </div>
 
-
           <div class="table-container">
 
             <table>
@@ -1392,20 +1362,18 @@ th {
               <thead>
 
                 <tr>
-
                   <th>Name</th>
                   <th>Email</th>
                   <th>Role</th>
                   <th>Status</th>
                   <th>Actions</th>
-
                 </tr>
 
               </thead>
 
-              <tbody id="usersTable">
-
-              </tbody>
+              <tbody
+                id="usersTable"
+              ></tbody>
 
             </table>
 
@@ -1451,15 +1419,12 @@ th {
 
     </div>
 
-
     <div id="taskMessage"></div>
-
 
     <input
       type="hidden"
       id="editTaskId"
     >
-
 
     <div class="form-group">
 
@@ -1472,7 +1437,6 @@ th {
 
     </div>
 
-
     <div class="form-group">
 
       <label>Description</label>
@@ -1483,7 +1447,6 @@ th {
       ></textarea>
 
     </div>
-
 
     <div class="form-group">
 
@@ -1498,7 +1461,6 @@ th {
       </select>
 
     </div>
-
 
     <div class="form-group">
 
@@ -1529,7 +1491,6 @@ th {
 
     </div>
 
-
     <div class="form-group">
 
       <label>Status</label>
@@ -1556,7 +1517,6 @@ th {
 
     </div>
 
-
     <div class="form-group">
 
       <label>Due Date</label>
@@ -1567,7 +1527,6 @@ th {
       >
 
     </div>
-
 
     <button
       class="btn-primary"
@@ -1581,10 +1540,8 @@ th {
 </div>
 
 
-
-
-  <!-- ======================================================
-     ACCOUNTS TRANSACTION MODAL
+<!-- ======================================================
+     ACCOUNT MODAL
 ====================================================== -->
 
 <div
@@ -1609,9 +1566,7 @@ th {
 
     </div>
 
-
     <div id="accountMessage"></div>
-
 
     <div class="form-group">
 
@@ -1623,7 +1578,6 @@ th {
       >
 
     </div>
-
 
     <div class="form-group">
 
@@ -1646,7 +1600,6 @@ th {
       </select>
 
     </div>
-
 
     <div class="form-group">
 
@@ -1698,7 +1651,6 @@ th {
 
     </div>
 
-
     <div class="form-group">
 
       <label>Description *</label>
@@ -1710,7 +1662,6 @@ th {
       >
 
     </div>
-
 
     <div class="form-group">
 
@@ -1725,7 +1676,6 @@ th {
       >
 
     </div>
-
 
     <div class="form-group">
 
@@ -1757,7 +1707,6 @@ th {
 
     </div>
 
-
     <div class="form-group">
 
       <label>Party / Person</label>
@@ -1769,7 +1718,6 @@ th {
       >
 
     </div>
-
 
     <div class="form-group">
 
@@ -1783,7 +1731,6 @@ th {
 
     </div>
 
-
     <button
       class="btn-primary"
       onclick="saveAccountTransaction()"
@@ -1796,29 +1743,14 @@ th {
 </div>
 
 
-
-
-  
-  
-<!-- ======================================================
-     JAVASCRIPT
-====================================================== -->
-
 <script>
 
 /* =========================================================
    CONFIG
 ========================================================= */
 
-/*
- * IMPORTANT:
- *
- * Replace this with your deployed Apps Script
- * Web App URL ending with /exec
- */
-
 const API_URL =
-  "https://script.google.com/macros/s/AKfycbwg7jlRGfIUPrP2eenHNWTZTeYS8-HBGQzCrMfHoeXBqZA_LVWPYehpcPJwDFlTaqFj/exec";
+"https://script.google.com/macros/s/AKfycbwg7jlRGfIUPrP2eenHNWTZTeYS8-HBGQzCrMfHoeXBqZA_LVWPYehpcPJwDFlTaqFj/exec";
 
 
 /* =========================================================
@@ -1826,7 +1758,9 @@ const API_URL =
 ========================================================= */
 
 let token =
-  localStorage.getItem("dreamLaddersToken") || "";
+  localStorage.getItem(
+    "dreamLaddersToken"
+  ) || "";
 
 let currentUser = null;
 
@@ -1836,14 +1770,17 @@ let users = [];
 
 
 /* =========================================================
-   API REQUEST
+   API
 ========================================================= */
 
-async function api(action, data = {}) {
+async function api(
+  action,
+  data = {}
+) {
 
   const payload = {
 
-    action: action,
+    action,
 
     ...data
 
@@ -1871,11 +1808,22 @@ async function api(action, data = {}) {
     );
 
 
+  if (!response.ok) {
+
+    throw new Error(
+      "HTTP " +
+      response.status
+    );
+
+  }
+
+
   const result =
     await response.json();
 
 
   return result;
+
 }
 
 
@@ -1902,19 +1850,20 @@ function hideLoading() {
 
 
 /* =========================================================
-   AUTH SCREEN
+   AUTH
 ========================================================= */
 
 function showLogin() {
 
   document
     .getElementById("loginForm")
-    .style.display = "block";
-
+    .style.display =
+      "block";
 
   document
     .getElementById("registerForm")
-    .style.display = "none";
+    .style.display =
+      "none";
 
 }
 
@@ -1923,12 +1872,13 @@ function showRegister() {
 
   document
     .getElementById("loginForm")
-    .style.display = "none";
-
+    .style.display =
+      "none";
 
   document
     .getElementById("registerForm")
-    .style.display = "block";
+    .style.display =
+      "block";
 
 }
 
@@ -1945,7 +1895,6 @@ async function login() {
       .value
       .trim();
 
-
   const password =
     document
       .getElementById("loginPassword")
@@ -1961,6 +1910,7 @@ async function login() {
     );
 
     return;
+
   }
 
 
@@ -1989,6 +1939,7 @@ async function login() {
       );
 
       return;
+
     }
 
 
@@ -2011,19 +1962,20 @@ async function login() {
 
   } catch (error) {
 
+    console.error(error);
+
     showMessage(
       "loginMessage",
       "Unable to connect to server",
       "error"
     );
 
-    console.error(error);
-
   } finally {
 
     hideLoading();
 
   }
+
 }
 
 
@@ -2039,13 +1991,11 @@ async function register() {
       .value
       .trim();
 
-
   const email =
     document
       .getElementById("registerEmail")
       .value
       .trim();
-
 
   const password =
     document
@@ -2062,6 +2012,7 @@ async function register() {
     );
 
     return;
+
   }
 
 
@@ -2091,6 +2042,7 @@ async function register() {
       );
 
       return;
+
     }
 
 
@@ -2105,11 +2057,9 @@ async function register() {
       .getElementById("registerName")
       .value = "";
 
-
     document
       .getElementById("registerEmail")
       .value = "";
-
 
     document
       .getElementById("registerPassword")
@@ -2124,6 +2074,8 @@ async function register() {
 
   } catch (error) {
 
+    console.error(error);
+
     showMessage(
       "registerMessage",
       "Unable to connect to server",
@@ -2135,11 +2087,12 @@ async function register() {
     hideLoading();
 
   }
+
 }
 
 
 /* =========================================================
-   INITIALIZE APP
+   INITIALIZE
 ========================================================= */
 
 async function initializeApp() {
@@ -2149,6 +2102,7 @@ async function initializeApp() {
     showAuth();
 
     return;
+
   }
 
 
@@ -2173,6 +2127,7 @@ async function initializeApp() {
       showAuth();
 
       return;
+
     }
 
 
@@ -2181,7 +2136,6 @@ async function initializeApp() {
 
 
     showApp();
-
 
     updateUserUI();
 
@@ -2195,7 +2149,8 @@ async function initializeApp() {
 
       document
         .getElementById("adminNav")
-        .style.display = "block";
+        .style.display =
+          "block";
 
       await loadUsers();
 
@@ -2213,23 +2168,25 @@ async function initializeApp() {
     hideLoading();
 
   }
+
 }
 
 
 /* =========================================================
-   SHOW APP
+   SHOW APP / AUTH
 ========================================================= */
 
 function showApp() {
 
   document
     .getElementById("authScreen")
-    .style.display = "none";
-
+    .style.display =
+      "none";
 
   document
     .getElementById("app")
-    .style.display = "block";
+    .style.display =
+      "block";
 
 }
 
@@ -2238,12 +2195,13 @@ function showAuth() {
 
   document
     .getElementById("authScreen")
-    .style.display = "flex";
-
+    .style.display =
+      "flex";
 
   document
     .getElementById("app")
-    .style.display = "none";
+    .style.display =
+      "none";
 
 }
 
@@ -2323,6 +2281,7 @@ async function loadTasks() {
     if (!result.success) {
 
       if (
+        result.error &&
         result.error
           .toLowerCase()
           .includes("session")
@@ -2335,6 +2294,7 @@ async function loadTasks() {
       }
 
       return;
+
     }
 
 
@@ -2343,7 +2303,6 @@ async function loadTasks() {
 
 
     renderTasks();
-
 
     updateDashboard();
 
@@ -2356,18 +2315,17 @@ async function loadTasks() {
     );
 
   }
+
 }
 
-
-/* =========================================================
-   RENDER TASKS
-========================================================= */
 
 function renderTasks() {
 
   const container =
     document
-      .getElementById("taskList");
+      .getElementById(
+        "taskList"
+      );
 
 
   container.innerHTML = "";
@@ -2398,19 +2356,20 @@ function renderTasks() {
 
     `;
 
+
     renderDashboardTasks();
 
     return;
+
   }
 
 
   tasks.forEach(
     task => {
 
-      container
-        .appendChild(
-          createTaskCard(task)
-        );
+      container.appendChild(
+        createTaskCard(task)
+      );
 
     }
   );
@@ -2421,14 +2380,14 @@ function renderTasks() {
 }
 
 
-/* =========================================================
-   TASK CARD
-========================================================= */
-
-function createTaskCard(task) {
+function createTaskCard(
+  task
+) {
 
   const card =
-    document.createElement("div");
+    document.createElement(
+      "div"
+    );
 
 
   card.className =
@@ -2437,7 +2396,9 @@ function createTaskCard(task) {
 
   const priorityClass =
     "priority-" +
-    String(task.priority)
+    String(
+      task.priority || "medium"
+    )
       .toLowerCase();
 
 
@@ -2476,7 +2437,18 @@ function createTaskCard(task) {
 
 
   const due =
-    formatDate(task.dueDate);
+    formatDate(
+      task.dueDate
+    );
+
+
+  const canDelete =
+    currentUser &&
+    (
+      currentUser.role === "Admin" ||
+      String(task.createdBy) ===
+      String(currentUser.userId)
+    );
 
 
   card.innerHTML = `
@@ -2487,7 +2459,8 @@ function createTaskCard(task) {
 
     <div class="task-description">
       ${escapeHtml(
-        task.description || "No description"
+        task.description ||
+        "No description"
       )}
     </div>
 
@@ -2496,13 +2469,17 @@ function createTaskCard(task) {
       <span
         class="badge ${priorityClass}"
       >
-        ${escapeHtml(task.priority)}
+        ${escapeHtml(
+          task.priority
+        )}
       </span>
 
       <span
         class="badge ${statusClass}"
       >
-        ${escapeHtml(task.status)}
+        ${escapeHtml(
+          task.status
+        )}
       </span>
 
     </div>
@@ -2524,28 +2501,23 @@ function createTaskCard(task) {
 
       <button
         class="btn-secondary"
-        onclick="editTask('${task.taskId}')"
+        onclick="editTask('${escapeHtml(task.taskId)}')"
       >
         Edit
       </button>
 
       ${
-        currentUser.role === "Admin" ||
-        String(task.createdBy) ===
-        String(currentUser.userId)
-          ?
-
+        canDelete
+        ?
         `
         <button
           class="btn-danger"
-          onclick="deleteTask('${task.taskId}')"
+          onclick="deleteTask('${escapeHtml(task.taskId)}')"
         >
           Delete
         </button>
         `
-
         :
-
         ""
       }
 
@@ -2555,6 +2527,7 @@ function createTaskCard(task) {
 
 
   return card;
+
 }
 
 
@@ -2570,19 +2543,22 @@ function updateDashboard() {
 
   const pending =
     tasks.filter(
-      t => t.status === "Pending"
+      t =>
+        t.status === "Pending"
     ).length;
 
 
   const progress =
     tasks.filter(
-      t => t.status === "In Progress"
+      t =>
+        t.status === "In Progress"
     ).length;
 
 
   const completed =
     tasks.filter(
-      t => t.status === "Completed"
+      t =>
+        t.status === "Completed"
     ).length;
 
 
@@ -2619,7 +2595,9 @@ function renderDashboardTasks() {
 
   const container =
     document
-      .getElementById("dashboardTasks");
+      .getElementById(
+        "dashboardTasks"
+      );
 
 
   container.innerHTML = "";
@@ -2630,10 +2608,9 @@ function renderDashboardTasks() {
     .forEach(
       task => {
 
-        container
-          .appendChild(
-            createTaskCard(task)
-          );
+        container.appendChild(
+          createTaskCard(task)
+        );
 
       }
     );
@@ -2642,44 +2619,60 @@ function renderDashboardTasks() {
 
 
 /* =========================================================
-   CREATE TASK MODAL
+   TASK MODAL
 ========================================================= */
 
 function openCreateTaskModal() {
 
   document
-    .getElementById("taskModalTitle")
+    .getElementById(
+      "taskModalTitle"
+    )
     .textContent =
       "Create Task";
 
 
   document
-    .getElementById("editTaskId")
+    .getElementById(
+      "editTaskId"
+    )
     .value = "";
 
 
   document
-    .getElementById("taskTitle")
+    .getElementById(
+      "taskTitle"
+    )
     .value = "";
 
 
   document
-    .getElementById("taskDescription")
+    .getElementById(
+      "taskDescription"
+    )
     .value = "";
 
 
   document
-    .getElementById("taskPriority")
-    .value = "Medium";
+    .getElementById(
+      "taskPriority"
+    )
+    .value =
+      "Medium";
 
 
   document
-    .getElementById("taskStatus")
-    .value = "Pending";
+    .getElementById(
+      "taskStatus"
+    )
+    .value =
+      "Pending";
 
 
   document
-    .getElementById("taskDueDate")
+    .getElementById(
+      "taskDueDate"
+    )
     .value = "";
 
 
@@ -2687,7 +2680,9 @@ function openCreateTaskModal() {
 
 
   document
-    .getElementById("taskModal")
+    .getElementById(
+      "taskModal"
+    )
     .classList.add("show");
 
 }
@@ -2696,14 +2691,16 @@ function openCreateTaskModal() {
 function closeTaskModal() {
 
   document
-    .getElementById("taskModal")
+    .getElementById(
+      "taskModal"
+    )
     .classList.remove("show");
 
 }
 
 
 /* =========================================================
-   POPULATE USERS
+   USERS FOR TASK
 ========================================================= */
 
 function populateAssignedUsers() {
@@ -2767,45 +2764,59 @@ async function saveTask() {
 
   const taskId =
     document
-      .getElementById("editTaskId")
+      .getElementById(
+        "editTaskId"
+      )
       .value;
 
 
   const title =
     document
-      .getElementById("taskTitle")
+      .getElementById(
+        "taskTitle"
+      )
       .value
       .trim();
 
 
   const description =
     document
-      .getElementById("taskDescription")
+      .getElementById(
+        "taskDescription"
+      )
       .value
       .trim();
 
 
   const assignedTo =
     document
-      .getElementById("taskAssignedTo")
+      .getElementById(
+        "taskAssignedTo"
+      )
       .value;
 
 
   const priority =
     document
-      .getElementById("taskPriority")
+      .getElementById(
+        "taskPriority"
+      )
       .value;
 
 
   const status =
     document
-      .getElementById("taskStatus")
+      .getElementById(
+        "taskStatus"
+      )
       .value;
 
 
   const dueDate =
     document
-      .getElementById("taskDueDate")
+      .getElementById(
+        "taskDueDate"
+      )
       .value;
 
 
@@ -2818,6 +2829,7 @@ async function saveTask() {
     );
 
     return;
+
   }
 
 
@@ -2835,23 +2847,14 @@ async function saveTask() {
         await api(
           "updateTask",
           {
-
             token,
-
             taskId,
-
             title,
-
             description,
-
             assignedTo,
-
             priority,
-
             status,
-
             dueDate
-
           }
         );
 
@@ -2861,21 +2864,13 @@ async function saveTask() {
         await api(
           "createTask",
           {
-
             token,
-
             title,
-
             description,
-
             assignedTo,
-
             priority,
-
             status,
-
             dueDate
-
           }
         );
 
@@ -2892,6 +2887,7 @@ async function saveTask() {
       );
 
       return;
+
     }
 
 
@@ -2916,6 +2912,7 @@ async function saveTask() {
     hideLoading();
 
   }
+
 }
 
 
@@ -2923,7 +2920,9 @@ async function saveTask() {
    EDIT TASK
 ========================================================= */
 
-function editTask(taskId) {
+function editTask(
+  taskId
+) {
 
   const task =
     tasks.find(
@@ -2937,58 +2936,78 @@ function editTask(taskId) {
 
 
   document
-    .getElementById("taskModalTitle")
+    .getElementById(
+      "taskModalTitle"
+    )
     .textContent =
       "Edit Task";
 
 
   document
-    .getElementById("editTaskId")
+    .getElementById(
+      "editTaskId"
+    )
     .value =
       task.taskId;
 
 
   document
-    .getElementById("taskTitle")
+    .getElementById(
+      "taskTitle"
+    )
     .value =
       task.title;
 
 
   document
-    .getElementById("taskDescription")
+    .getElementById(
+      "taskDescription"
+    )
     .value =
       task.description || "";
 
 
   document
-    .getElementById("taskPriority")
+    .getElementById(
+      "taskPriority"
+    )
     .value =
       task.priority;
 
 
   document
-    .getElementById("taskStatus")
+    .getElementById(
+      "taskStatus"
+    )
     .value =
       task.status;
 
 
   document
-    .getElementById("taskDueDate")
+    .getElementById(
+      "taskDueDate"
+    )
     .value =
-      dateForInput(task.dueDate);
+      dateForInput(
+        task.dueDate
+      );
 
 
   populateAssignedUsers();
 
 
   document
-    .getElementById("taskAssignedTo")
+    .getElementById(
+      "taskAssignedTo"
+    )
     .value =
       task.assignedTo || "";
 
 
   document
-    .getElementById("taskModal")
+    .getElementById(
+      "taskModal"
+    )
     .classList.add("show");
 
 }
@@ -2998,7 +3017,9 @@ function editTask(taskId) {
    DELETE TASK
 ========================================================= */
 
-async function deleteTask(taskId) {
+async function deleteTask(
+  taskId
+) {
 
   if (
     !confirm(
@@ -3007,6 +3028,7 @@ async function deleteTask(taskId) {
   ) {
 
     return;
+
   }
 
 
@@ -3019,11 +3041,8 @@ async function deleteTask(taskId) {
       await api(
         "deleteTask",
         {
-
           token,
-
           taskId
-
         }
       );
 
@@ -3036,6 +3055,7 @@ async function deleteTask(taskId) {
       );
 
       return;
+
     }
 
 
@@ -3055,71 +3075,109 @@ async function deleteTask(taskId) {
     hideLoading();
 
   }
+
 }
 
 
-
-
-
-
-  /* =========================================================
+/* =========================================================
    ACCOUNTS
 ========================================================= */
 
-async function openAccountModal() {
+function openAccountModal() {
 
   const modal =
     document.getElementById(
       "accountModal"
     );
 
-  if (!modal) {
-    console.error(
-      "accountModal element not found"
-    );
-    return;
-  }
+
+  if (!modal) return;
+
+
+  const today =
+    new Date();
+
+
+  const localDate =
+    today.getFullYear() +
+    "-" +
+    String(
+      today.getMonth() + 1
+    ).padStart(2, "0") +
+    "-" +
+    String(
+      today.getDate()
+    ).padStart(2, "0");
+
 
   document
-    .getElementById("accountDate")
+    .getElementById(
+      "accountDate"
+    )
     .value =
-      new Date()
-        .toISOString()
-        .split("T")[0];
+      localDate;
+
 
   document
-    .getElementById("accountType")
+    .getElementById(
+      "accountType"
+    )
     .value = "";
 
+
   document
-    .getElementById("accountCategory")
+    .getElementById(
+      "accountCategory"
+    )
     .value = "";
 
+
   document
-    .getElementById("accountDescription")
+    .getElementById(
+      "accountDescription"
+    )
     .value = "";
 
+
   document
-    .getElementById("accountAmount")
+    .getElementById(
+      "accountAmount"
+    )
     .value = "";
 
-  document
-    .getElementById("accountPaymentMode")
-    .value = "Cash";
 
   document
-    .getElementById("accountParty")
+    .getElementById(
+      "accountPaymentMode"
+    )
+    .value =
+      "Cash";
+
+
+  document
+    .getElementById(
+      "accountParty"
+    )
     .value = "";
 
-  document
-    .getElementById("accountReference")
-    .value = "";
 
   document
-    .getElementById("accountMessage")
+    .getElementById(
+      "accountReference"
+    )
+    .value = "";
+
+
+  document
+    .getElementById(
+      "accountMessage"
+    )
     .innerHTML = "";
 
-  modal.classList.add("show");
+
+  modal
+    .classList.add("show");
+
 }
 
 
@@ -3130,61 +3188,88 @@ function closeAccountModal() {
       "accountModal"
     );
 
+
   if (modal) {
 
-    modal.classList.remove(
-      "show"
-    );
+    modal
+      .classList.remove("show");
 
   }
 
 }
 
 
+/* =========================================================
+   SAVE ACCOUNT TRANSACTION
+========================================================= */
+
 async function saveAccountTransaction() {
 
   const date =
     document
-      .getElementById("accountDate")
+      .getElementById(
+        "accountDate"
+      )
       .value;
+
 
   const type =
     document
-      .getElementById("accountType")
+      .getElementById(
+        "accountType"
+      )
       .value;
+
 
   const category =
     document
-      .getElementById("accountCategory")
+      .getElementById(
+        "accountCategory"
+      )
       .value;
+
 
   const description =
     document
-      .getElementById("accountDescription")
+      .getElementById(
+        "accountDescription"
+      )
       .value
       .trim();
+
 
   const amount =
     Number(
       document
-        .getElementById("accountAmount")
+        .getElementById(
+          "accountAmount"
+        )
         .value
     );
 
+
   const paymentMode =
     document
-      .getElementById("accountPaymentMode")
+      .getElementById(
+        "accountPaymentMode"
+      )
       .value;
+
 
   const party =
     document
-      .getElementById("accountParty")
+      .getElementById(
+        "accountParty"
+      )
       .value
       .trim();
 
+
   const reference =
     document
-      .getElementById("accountReference")
+      .getElementById(
+        "accountReference"
+      )
       .value
       .trim();
 
@@ -3198,6 +3283,7 @@ async function saveAccountTransaction() {
     );
 
     return;
+
   }
 
 
@@ -3210,6 +3296,7 @@ async function saveAccountTransaction() {
     );
 
     return;
+
   }
 
 
@@ -3222,6 +3309,7 @@ async function saveAccountTransaction() {
     );
 
     return;
+
   }
 
 
@@ -3234,6 +3322,7 @@ async function saveAccountTransaction() {
     );
 
     return;
+
   }
 
 
@@ -3246,6 +3335,7 @@ async function saveAccountTransaction() {
     );
 
     return;
+
   }
 
 
@@ -3258,25 +3348,15 @@ async function saveAccountTransaction() {
       await api(
         "addAccountTransaction",
         {
-
           token,
-
           date,
-
           type,
-
           category,
-
           description,
-
           amount,
-
           paymentMode,
-
           party,
-
           reference
-
         }
       );
 
@@ -3291,6 +3371,7 @@ async function saveAccountTransaction() {
       );
 
       return;
+
     }
 
 
@@ -3301,6 +3382,13 @@ async function saveAccountTransaction() {
       "success"
     );
 
+
+    /*
+     * IMPORTANT:
+     *
+     * Reload the data from Google Sheets
+     * after saving.
+     */
 
     await loadAccounts();
 
@@ -3325,7 +3413,6 @@ async function saveAccountTransaction() {
       "error"
     );
 
-
   } finally {
 
     hideLoading();
@@ -3335,45 +3422,75 @@ async function saveAccountTransaction() {
 }
 
 
+/* =========================================================
+   LOAD ACCOUNTS
+========================================================= */
+
 async function loadAccounts() {
 
+  if (!token) {
+
+    console.warn(
+      "No authentication token."
+    );
+
+    return;
+
+  }
+
+
+  const searchElement =
+    document.getElementById(
+      "accountSearch"
+    );
+
+
+  const typeElement =
+    document.getElementById(
+      "accountTypeFilter"
+    );
+
+
+  const fromDateElement =
+    document.getElementById(
+      "accountFromDate"
+    );
+
+
+  const toDateElement =
+    document.getElementById(
+      "accountToDate"
+    );
+
+
+  const filters = {
+
+    token,
+
+    search:
+      searchElement
+        ? searchElement.value.trim()
+        : "",
+
+    type:
+      typeElement
+        ? typeElement.value
+        : "",
+
+    fromDate:
+      fromDateElement
+        ? fromDateElement.value
+        : "",
+
+    toDate:
+      toDateElement
+        ? toDateElement.value
+        : ""
+
+  };
+
+
   try {
-
-    const filters = {
-
-      token,
-
-      search:
-        document
-          .getElementById(
-            "accountSearch"
-          )
-          .value
-          .trim(),
-
-      type:
-        document
-          .getElementById(
-            "accountTypeFilter"
-          )
-          .value,
-
-      fromDate:
-        document
-          .getElementById(
-            "accountFromDate"
-          )
-          .value,
-
-      toDate:
-        document
-          .getElementById(
-            "accountToDate"
-          )
-          .value
-
-    };
-
 
     const result =
       await api(
@@ -3382,19 +3499,46 @@ async function loadAccounts() {
       );
 
 
+    console.log(
+      "getAccountTransactions response:",
+      result
+    );
+
+
     if (!result.success) {
 
       console.error(
+        "Accounts error:",
         result.error
       );
 
+
+      renderAccounts([]);
+
+
       return;
+
     }
 
 
+    /*
+     * Backend may return:
+     *
+     * result.transactions
+     *
+     * We explicitly use that property.
+     */
+
+    const transactions =
+      Array.isArray(
+        result.transactions
+      )
+        ? result.transactions
+        : [];
+
+
     renderAccounts(
-      result.transactions ||
-      result
+      transactions
     );
 
 
@@ -3410,10 +3554,17 @@ async function loadAccounts() {
       error
     );
 
+
+    renderAccounts([]);
+
   }
 
 }
 
+
+/* =========================================================
+   ACCOUNTS SUMMARY
+========================================================= */
 
 async function loadAccountsSummary(
   filters
@@ -3428,8 +3579,16 @@ async function loadAccountsSummary(
       );
 
 
+    console.log(
+      "Accounts summary:",
+      result
+    );
+
+
     if (!result.success) {
+
       return;
+
     }
 
 
@@ -3468,7 +3627,9 @@ async function loadAccountsSummary(
         "accountTransactionCount"
       )
       .textContent =
-        result.transactionCount;
+        Number(
+          result.transactionCount
+        ) || 0;
 
 
   } catch (error) {
@@ -3483,15 +3644,18 @@ async function loadAccountsSummary(
 }
 
 
+/* =========================================================
+   RENDER ACCOUNTS
+========================================================= */
+
 function renderAccounts(
   transactions
 ) {
 
   const tbody =
-    document
-      .getElementById(
-        "accountsTable"
-      );
+    document.getElementById(
+      "accountsTable"
+    );
 
 
   if (!tbody) return;
@@ -3501,7 +3665,9 @@ function renderAccounts(
 
 
   if (
-    !transactions ||
+    !Array.isArray(
+      transactions
+    ) ||
     !transactions.length
   ) {
 
@@ -3524,7 +3690,9 @@ function renderAccounts(
 
     `;
 
+
     return;
+
   }
 
 
@@ -3543,12 +3711,15 @@ function renderAccounts(
           : "status-cancelled";
 
 
+      const id =
+        transaction.id ??
+        "";
+
+
       tr.innerHTML = `
 
         <td>
-          ${escapeHtml(
-            transaction.id
-          )}
+          ${escapeHtml(id)}
         </td>
 
         <td>
@@ -3611,9 +3782,7 @@ function renderAccounts(
             class="btn-danger"
             onclick="
               deleteAccountTransaction(
-                '${escapeHtml(
-                  transaction.id
-                )}'
+                '${escapeHtml(id)}'
               )
             "
           >
@@ -3625,13 +3794,19 @@ function renderAccounts(
       `;
 
 
-      tbody.appendChild(tr);
+      tbody.appendChild(
+        tr
+      );
 
     }
   );
 
 }
 
+
+/* =========================================================
+   DELETE ACCOUNT TRANSACTION
+========================================================= */
 
 async function deleteAccountTransaction(
   id
@@ -3644,6 +3819,7 @@ async function deleteAccountTransaction(
   ) {
 
     return;
+
   }
 
 
@@ -3656,11 +3832,8 @@ async function deleteAccountTransaction(
       await api(
         "deleteAccountTransaction",
         {
-
           token,
-
           id
-
         }
       );
 
@@ -3673,6 +3846,7 @@ async function deleteAccountTransaction(
       );
 
       return;
+
     }
 
 
@@ -3695,6 +3869,10 @@ async function deleteAccountTransaction(
 
 }
 
+
+/* =========================================================
+   ACCOUNT FILTERS
+========================================================= */
 
 function clearAccountFilters() {
 
@@ -3731,6 +3909,10 @@ function clearAccountFilters() {
 }
 
 
+/* =========================================================
+   CURRENCY
+========================================================= */
+
 function formatCurrency(
   value
 ) {
@@ -3738,13 +3920,9 @@ function formatCurrency(
   return new Intl.NumberFormat(
     "en-IN",
     {
-
       style: "currency",
-
       currency: "INR",
-
       maximumFractionDigits: 2
-
     }
   ).format(
     Number(value) || 0
@@ -3752,9 +3930,6 @@ function formatCurrency(
 
 }
 
-
-
-  
 
 /* =========================================================
    USERS
@@ -3768,6 +3943,7 @@ async function loadUsers() {
   ) {
 
     return;
+
   }
 
 
@@ -3789,6 +3965,7 @@ async function loadUsers() {
       );
 
       return;
+
     }
 
 
@@ -3807,20 +3984,19 @@ async function loadUsers() {
     console.error(error);
 
   }
+
 }
 
-
-/* =========================================================
-   RENDER USERS
-========================================================= */
 
 function renderUsers() {
 
   const tbody =
-    document
-      .getElementById(
-        "usersTable"
-      );
+    document.getElementById(
+      "usersTable"
+    );
+
+
+  if (!tbody) return;
 
 
   tbody.innerHTML = "";
@@ -3835,14 +4011,25 @@ function renderUsers() {
         );
 
 
+      const isSelf =
+        String(user.userId) ===
+        String(
+          currentUser.userId
+        );
+
+
       tr.innerHTML = `
 
         <td>
-          ${escapeHtml(user.name)}
+          ${escapeHtml(
+            user.name
+          )}
         </td>
 
         <td>
-          ${escapeHtml(user.email)}
+          ${escapeHtml(
+            user.email
+          )}
         </td>
 
         <td>
@@ -3850,7 +4037,7 @@ function renderUsers() {
           <select
             onchange="
               changeRole(
-                '${user.userId}',
+                '${escapeHtml(user.userId)}',
                 this.value
               )
             "
@@ -3891,7 +4078,9 @@ function renderUsers() {
                 : "status-cancelled"
             }"
           >
-            ${escapeHtml(user.status)}
+            ${escapeHtml(
+              user.status
+            )}
           </span>
 
         </td>
@@ -3899,41 +4088,34 @@ function renderUsers() {
         <td>
 
           ${
-            String(user.userId) ===
-            String(currentUser.userId)
-
-            ?
-
-            ""
-
-            :
-
-            `
-            <button
-              class="${
-                user.status === "Active"
-                  ? "btn-danger"
-                  : "btn-success"
-              }"
-              onclick="
-                changeStatus(
-                  '${user.userId}',
-                  '${
-                    user.status === "Active"
-                      ? "Suspended"
-                      : "Active"
-                  }'
-                )
-              "
-            >
-              ${
-                user.status === "Active"
-                  ? "Suspend"
-                  : "Activate"
-              }
-            </button>
-            `
-
+            isSelf
+              ? ""
+              :
+              `
+              <button
+                class="${
+                  user.status === "Active"
+                    ? "btn-danger"
+                    : "btn-success"
+                }"
+                onclick="
+                  changeStatus(
+                    '${escapeHtml(user.userId)}',
+                    '${
+                      user.status === "Active"
+                        ? "Suspended"
+                        : "Active"
+                    }'
+                  )
+                "
+              >
+                ${
+                  user.status === "Active"
+                    ? "Suspend"
+                    : "Activate"
+                }
+              </button>
+              `
           }
 
         </td>
@@ -3960,32 +4142,41 @@ async function changeRole(
   role
 ) {
 
-  const result =
-    await api(
-      "changeUserRole",
-      {
+  try {
 
-        token,
-
-        userId,
-
-        role
-
-      }
-    );
+    const result =
+      await api(
+        "changeUserRole",
+        {
+          token,
+          userId,
+          role
+        }
+      );
 
 
-  if (!result.success) {
+    if (!result.success) {
+
+      alert(
+        result.error ||
+        "Unable to change role"
+      );
+
+    }
+
+
+    await loadUsers();
+
+
+  } catch (error) {
+
+    console.error(error);
 
     alert(
-      result.error ||
-      "Unable to change role"
+      "Server connection failed"
     );
 
   }
-
-
-  await loadUsers();
 
 }
 
@@ -4010,35 +4201,45 @@ async function changeStatus(
     await loadUsers();
 
     return;
+
   }
 
 
-  const result =
-    await api(
-      "changeUserStatus",
-      {
+  try {
 
-        token,
-
-        userId,
-
-        status
-
-      }
-    );
+    const result =
+      await api(
+        "changeUserStatus",
+        {
+          token,
+          userId,
+          status
+        }
+      );
 
 
-  if (!result.success) {
+    if (!result.success) {
+
+      alert(
+        result.error ||
+        "Unable to change status"
+      );
+
+    }
+
+
+    await loadUsers();
+
+
+  } catch (error) {
+
+    console.error(error);
 
     alert(
-      result.error ||
-      "Unable to change status"
+      "Server connection failed"
     );
 
   }
-
-
-  await loadUsers();
 
 }
 
@@ -4077,6 +4278,7 @@ async function changePassword() {
     );
 
     return;
+
   }
 
 
@@ -4089,13 +4291,9 @@ async function changePassword() {
       await api(
         "changePassword",
         {
-
           token,
-
           oldPassword,
-
           newPassword
-
         }
       );
 
@@ -4110,12 +4308,14 @@ async function changePassword() {
       );
 
       return;
+
     }
 
 
     showMessage(
       "passwordMessage",
-      result.message,
+      result.message ||
+        "Password changed successfully",
       "success"
     );
 
@@ -4133,10 +4333,6 @@ async function changePassword() {
       )
       .value = "";
 
-
-    /*
-     * Backend revokes all sessions.
-     */
 
     setTimeout(
       () => {
@@ -4165,6 +4361,7 @@ async function changePassword() {
     hideLoading();
 
   }
+
 }
 
 
@@ -4271,11 +4468,18 @@ function showPage(
   }
 
 
+  /* =====================================================
+     IMPORTANT FIX
+     Accounts title was missing before.
+  ===================================================== */
+
   const titles = {
 
     dashboard: "Dashboard",
 
     tasks: "Tasks",
+
+    accounts: "Accounts",
 
     profile: "Profile",
 
@@ -4285,11 +4489,17 @@ function showPage(
 
 
   document
-    .getElementById("pageTitle")
+    .getElementById(
+      "pageTitle"
+    )
     .textContent =
       titles[pageId] ||
       "Dream Ladders";
 
+
+  /* =====================================================
+     PAGE DATA LOADING
+  ===================================================== */
 
   if (
     pageId === "users"
@@ -4309,12 +4519,30 @@ function showPage(
   }
 
 
+  /*
+   * THIS WAS MISSING IN YOUR ORIGINAL CODE.
+   *
+   * Every time Accounts is opened,
+   * data is fetched from Google Sheets.
+   */
+
+  if (
+    pageId === "accounts"
+  ) {
+
+    loadAccounts();
+
+  }
+
+
   if (
     window.innerWidth <= 850
   ) {
 
     document
-      .getElementById("sidebar")
+      .getElementById(
+        "sidebar"
+      )
       .classList.remove(
         "open"
       );
@@ -4345,7 +4573,9 @@ function showPageById(
 function toggleSidebar() {
 
   document
-    .getElementById("sidebar")
+    .getElementById(
+      "sidebar"
+    )
     .classList.toggle(
       "open"
     );
@@ -4367,6 +4597,9 @@ function showMessage(
     document.getElementById(
       elementId
     );
+
+
+  if (!element) return;
 
 
   element.innerHTML = `
@@ -4394,10 +4627,14 @@ function showMessage(
    DATE
 ========================================================= */
 
-function formatDate(value) {
+function formatDate(
+  value
+) {
 
   if (!value) {
+
     return "";
+
   }
 
 
@@ -4406,7 +4643,9 @@ function formatDate(value) {
 
 
   if (
-    isNaN(date.getTime())
+    isNaN(
+      date.getTime()
+    )
   ) {
 
     return String(value);
@@ -4419,10 +4658,14 @@ function formatDate(value) {
 }
 
 
-function dateForInput(value) {
+function dateForInput(
+  value
+) {
 
   if (!value) {
+
     return "";
+
   }
 
 
@@ -4431,10 +4674,13 @@ function dateForInput(value) {
 
 
   if (
-    isNaN(date.getTime())
+    isNaN(
+      date.getTime()
+    )
   ) {
 
     return "";
+
   }
 
 
@@ -4449,7 +4695,9 @@ function dateForInput(value) {
    HTML ESCAPE
 ========================================================= */
 
-function escapeHtml(value) {
+function escapeHtml(
+  value
+) {
 
   return String(
     value ?? ""
@@ -4484,7 +4732,7 @@ function escapeHtml(value) {
 
 
 /* =========================================================
-   START
+   START APPLICATION
 ========================================================= */
 
 document.addEventListener(
