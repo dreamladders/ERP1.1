@@ -1768,6 +1768,8 @@ let tasks = [];
 
 let users = [];
 
+let accounts = [];
+
 
 /* =========================================================
    API
@@ -1781,6 +1783,8 @@ async function api(
   const payload = {
 
     action,
+
+    token,
 
     ...data
 
@@ -1828,7 +1832,7 @@ async function api(
 
 
 /* =========================================================
-   LOADING
+   LOADING & MESSAGES
 ========================================================= */
 
 function showLoading() {
@@ -1849,11 +1853,45 @@ function hideLoading() {
 }
 
 
+function showMessage(elementId, text, type) {
+
+  const el = document.getElementById(elementId);
+
+  if (!el) return;
+
+  el.className = type;
+
+  el.innerText = text;
+
+  el.style.display = "block";
+
+}
+
+
+function clearMessage(elementId) {
+
+  const el = document.getElementById(elementId);
+
+  if (!el) return;
+
+  el.className = "";
+
+  el.innerText = "";
+
+  el.style.display = "none";
+
+}
+
+
 /* =========================================================
-   AUTH
+   AUTH UI SWAPPING
 ========================================================= */
 
 function showLogin() {
+
+  clearMessage("loginMessage");
+
+  clearMessage("registerMessage");
 
   document
     .getElementById("loginForm")
@@ -1870,6 +1908,10 @@ function showLogin() {
 
 function showRegister() {
 
+  clearMessage("loginMessage");
+
+  clearMessage("registerMessage");
+
   document
     .getElementById("loginForm")
     .style.display =
@@ -1884,7 +1926,7 @@ function showRegister() {
 
 
 /* =========================================================
-   LOGIN
+   LOGIN & REGISTER
 ========================================================= */
 
 async function login() {
@@ -1943,9 +1985,9 @@ async function login() {
     }
 
 
-    token =
-      result.token;
+    token = result.token || result.user.token;
 
+    currentUser = result.user;
 
     localStorage.setItem(
       "dreamLaddersToken",
@@ -1953,20 +1995,16 @@ async function login() {
     );
 
 
-    currentUser =
-      result.user;
+    setupAppUI();
+
+    await loadInitialData();
 
 
-    await initializeApp();
-
-
-  } catch (error) {
-
-    console.error(error);
+  } catch (err) {
 
     showMessage(
       "loginMessage",
-      "Unable to connect to server",
+      err.message || "An unexpected error occurred",
       "error"
     );
 
@@ -1978,10 +2016,6 @@ async function login() {
 
 }
 
-
-/* =========================================================
-   REGISTER
-========================================================= */
 
 async function register() {
 
@@ -2047,38 +2081,19 @@ async function register() {
 
 
     showMessage(
-      "registerMessage",
-      "Account created. You can now login.",
+      "loginMessage",
+      "Account created successfully. Please log in.",
       "success"
     );
 
-
-    document
-      .getElementById("registerName")
-      .value = "";
-
-    document
-      .getElementById("registerEmail")
-      .value = "";
-
-    document
-      .getElementById("registerPassword")
-      .value = "";
+    showLogin();
 
 
-    setTimeout(
-      showLogin,
-      1200
-    );
-
-
-  } catch (error) {
-
-    console.error(error);
+  } catch (err) {
 
     showMessage(
       "registerMessage",
-      "Unable to connect to server",
+      err.message || "An error occurred during registration",
       "error"
     );
 
@@ -2091,2481 +2106,62 @@ async function register() {
 }
 
 
-/* =========================================================
-   INITIALIZE
-========================================================= */
-
-async function initializeApp() {
-
-  if (!token) {
-
-    showAuth();
-
-    return;
-
-  }
-
-
-  showLoading();
-
-
-  try {
-
-    const result =
-      await api(
-        "me",
-        {
-          token
-        }
-      );
-
-
-    if (!result.success) {
-
-      clearSession();
-
-      showAuth();
-
-      return;
-
-    }
-
-
-    currentUser =
-      result.user;
-
-
-    showApp();
-
-    updateUserUI();
-
-
-    await loadTasks();
-
-
-    if (
-      currentUser.role === "Admin"
-    ) {
-
-      document
-        .getElementById("adminNav")
-        .style.display =
-          "block";
-
-      await loadUsers();
-
-    }
-
-
-  } catch (error) {
-
-    console.error(error);
-
-    showAuth();
-
-  } finally {
-
-    hideLoading();
-
-  }
-
-}
-
-
-/* =========================================================
-   SHOW APP / AUTH
-========================================================= */
-
-function showApp() {
-
-  document
-    .getElementById("authScreen")
-    .style.display =
-      "none";
-
-  document
-    .getElementById("app")
-    .style.display =
-      "block";
-
-}
-
-
-function showAuth() {
-
-  document
-    .getElementById("authScreen")
-    .style.display =
-      "flex";
-
-  document
-    .getElementById("app")
-    .style.display =
-      "none";
-
-}
-
-
-/* =========================================================
-   USER UI
-========================================================= */
-
-function updateUserUI() {
-
-  if (!currentUser) return;
-
-
-  document
-    .getElementById("topUserName")
-    .textContent =
-      currentUser.name;
-
-
-  document
-    .getElementById("topUserRole")
-    .textContent =
-      currentUser.role;
-
-
-  document
-    .getElementById("avatar")
-    .textContent =
-      currentUser.name
-        .charAt(0)
-        .toUpperCase();
-
-
-  document
-    .getElementById("profileName")
-    .value =
-      currentUser.name;
-
-
-  document
-    .getElementById("profileEmail")
-    .value =
-      currentUser.email;
-
-
-  document
-    .getElementById("profileRole")
-    .value =
-      currentUser.role;
-
-
-  document
-    .getElementById("profileStatus")
-    .value =
-      currentUser.status;
-
-}
-
-
-/* =========================================================
-   TASKS
-========================================================= */
-
-async function loadTasks() {
-
-  try {
-
-    const result =
-      await api(
-        "getTasks",
-        {
-          token
-        }
-      );
-
-
-    if (!result.success) {
-
-      if (
-        result.error &&
-        result.error
-          .toLowerCase()
-          .includes("session")
-      ) {
-
-        clearSession();
-
-        showAuth();
-
-      }
-
-      return;
-
-    }
-
-
-    tasks =
-      result.tasks || [];
-
-
-    renderTasks();
-
-    updateDashboard();
-
-
-  } catch (error) {
-
-    console.error(
-      "Load tasks error:",
-      error
-    );
-
-  }
-
-}
-
-
-function renderTasks() {
-
-  const container =
-    document
-      .getElementById(
-        "taskList"
-      );
-
-
-  container.innerHTML = "";
-
-
-  if (!tasks.length) {
-
-    container.innerHTML = `
-
-      <div
-        style="
-          grid-column:1/-1;
-          text-align:center;
-          padding:50px;
-          color:#64748b;
-        "
-      >
-
-        <div style="font-size:40px">
-          📋
-        </div>
-
-        <div style="margin-top:10px">
-          No tasks found
-        </div>
-
-      </div>
-
-    `;
-
-
-    renderDashboardTasks();
-
-    return;
-
-  }
-
-
-  tasks.forEach(
-    task => {
-
-      container.appendChild(
-        createTaskCard(task)
-      );
-
-    }
-  );
-
-
-  renderDashboardTasks();
-
-}
-
-
-function createTaskCard(
-  task
-) {
-
-  const card =
-    document.createElement(
-      "div"
-    );
-
-
-  card.className =
-    "task-card";
-
-
-  const priorityClass =
-    "priority-" +
-    String(
-      task.priority || "medium"
-    )
-      .toLowerCase();
-
-
-  let statusClass =
-    "status-pending";
-
-
-  if (
-    task.status === "In Progress"
-  ) {
-
-    statusClass =
-      "status-progress";
-
-  }
-
-
-  if (
-    task.status === "Completed"
-  ) {
-
-    statusClass =
-      "status-completed";
-
-  }
-
-
-  if (
-    task.status === "Cancelled"
-  ) {
-
-    statusClass =
-      "status-cancelled";
-
-  }
-
-
-  const due =
-    formatDate(
-      task.dueDate
-    );
-
-
-  const canDelete =
-    currentUser &&
-    (
-      currentUser.role === "Admin" ||
-      String(task.createdBy) ===
-      String(currentUser.userId)
-    );
-
-
-  card.innerHTML = `
-
-    <div class="task-title">
-      ${escapeHtml(task.title)}
-    </div>
-
-    <div class="task-description">
-      ${escapeHtml(
-        task.description ||
-        "No description"
-      )}
-    </div>
-
-    <div class="badges">
-
-      <span
-        class="badge ${priorityClass}"
-      >
-        ${escapeHtml(
-          task.priority
-        )}
-      </span>
-
-      <span
-        class="badge ${statusClass}"
-      >
-        ${escapeHtml(
-          task.status
-        )}
-      </span>
-
-    </div>
-
-    <div
-      style="
-        font-size:12px;
-        color:#64748b;
-        margin-bottom:12px;
-      "
-    >
-
-      Due:
-      ${due || "No due date"}
-
-    </div>
-
-    <div class="task-actions">
-
-      <button
-        class="btn-secondary"
-        onclick="editTask('${escapeHtml(task.taskId)}')"
-      >
-        Edit
-      </button>
-
-      ${
-        canDelete
-        ?
-        `
-        <button
-          class="btn-danger"
-          onclick="deleteTask('${escapeHtml(task.taskId)}')"
-        >
-          Delete
-        </button>
-        `
-        :
-        ""
-      }
-
-    </div>
-
-  `;
-
-
-  return card;
-
-}
-
-
-/* =========================================================
-   DASHBOARD
-========================================================= */
-
-function updateDashboard() {
-
-  const total =
-    tasks.length;
-
-
-  const pending =
-    tasks.filter(
-      t =>
-        t.status === "Pending"
-    ).length;
-
-
-  const progress =
-    tasks.filter(
-      t =>
-        t.status === "In Progress"
-    ).length;
-
-
-  const completed =
-    tasks.filter(
-      t =>
-        t.status === "Completed"
-    ).length;
-
-
-  document
-    .getElementById("statTotal")
-    .textContent =
-      total;
-
-
-  document
-    .getElementById("statPending")
-    .textContent =
-      pending;
-
-
-  document
-    .getElementById("statProgress")
-    .textContent =
-      progress;
-
-
-  document
-    .getElementById("statCompleted")
-    .textContent =
-      completed;
-
-
-  renderDashboardTasks();
-
-}
-
-
-function renderDashboardTasks() {
-
-  const container =
-    document
-      .getElementById(
-        "dashboardTasks"
-      );
-
-
-  container.innerHTML = "";
-
-
-  tasks
-    .slice(0, 4)
-    .forEach(
-      task => {
-
-        container.appendChild(
-          createTaskCard(task)
-        );
-
-      }
-    );
-
-}
-
-
-/* =========================================================
-   TASK MODAL
-========================================================= */
-
-function openCreateTaskModal() {
-
-  document
-    .getElementById(
-      "taskModalTitle"
-    )
-    .textContent =
-      "Create Task";
-
-
-  document
-    .getElementById(
-      "editTaskId"
-    )
-    .value = "";
-
-
-  document
-    .getElementById(
-      "taskTitle"
-    )
-    .value = "";
-
-
-  document
-    .getElementById(
-      "taskDescription"
-    )
-    .value = "";
-
-
-  document
-    .getElementById(
-      "taskPriority"
-    )
-    .value =
-      "Medium";
-
-
-  document
-    .getElementById(
-      "taskStatus"
-    )
-    .value =
-      "Pending";
-
-
-  document
-    .getElementById(
-      "taskDueDate"
-    )
-    .value = "";
-
-
-  populateAssignedUsers();
-
-
-  document
-    .getElementById(
-      "taskModal"
-    )
-    .classList.add("show");
-
-}
-
-
-function closeTaskModal() {
-
-  document
-    .getElementById(
-      "taskModal"
-    )
-    .classList.remove("show");
-
-}
-
-
-/* =========================================================
-   USERS FOR TASK
-========================================================= */
-
-function populateAssignedUsers() {
-
-  const select =
-    document
-      .getElementById(
-        "taskAssignedTo"
-      );
-
-
-  select.innerHTML = `
-
-    <option value="">
-      Unassigned
-    </option>
-
-  `;
-
-
-  users
-    .filter(
-      user =>
-        user.status === "Active"
-    )
-    .forEach(
-      user => {
-
-        const option =
-          document.createElement(
-            "option"
-          );
-
-
-        option.value =
-          user.userId;
-
-
-        option.textContent =
-          user.name +
-          " (" +
-          user.email +
-          ")";
-
-
-        select.appendChild(
-          option
-        );
-
-      }
-    );
-
-}
-
-
-/* =========================================================
-   SAVE TASK
-========================================================= */
-
-async function saveTask() {
-
-  const taskId =
-    document
-      .getElementById(
-        "editTaskId"
-      )
-      .value;
-
-
-  const title =
-    document
-      .getElementById(
-        "taskTitle"
-      )
-      .value
-      .trim();
-
-
-  const description =
-    document
-      .getElementById(
-        "taskDescription"
-      )
-      .value
-      .trim();
-
-
-  const assignedTo =
-    document
-      .getElementById(
-        "taskAssignedTo"
-      )
-      .value;
-
-
-  const priority =
-    document
-      .getElementById(
-        "taskPriority"
-      )
-      .value;
-
-
-  const status =
-    document
-      .getElementById(
-        "taskStatus"
-      )
-      .value;
-
-
-  const dueDate =
-    document
-      .getElementById(
-        "taskDueDate"
-      )
-      .value;
-
-
-  if (!title) {
-
-    showMessage(
-      "taskMessage",
-      "Task title is required",
-      "error"
-    );
-
-    return;
-
-  }
-
-
-  showLoading();
-
-
-  try {
-
-    let result;
-
-
-    if (taskId) {
-
-      result =
-        await api(
-          "updateTask",
-          {
-            token,
-            taskId,
-            title,
-            description,
-            assignedTo,
-            priority,
-            status,
-            dueDate
-          }
-        );
-
-    } else {
-
-      result =
-        await api(
-          "createTask",
-          {
-            token,
-            title,
-            description,
-            assignedTo,
-            priority,
-            status,
-            dueDate
-          }
-        );
-
-    }
-
-
-    if (!result.success) {
-
-      showMessage(
-        "taskMessage",
-        result.error ||
-          "Unable to save task",
-        "error"
-      );
-
-      return;
-
-    }
-
-
-    closeTaskModal();
-
-
-    await loadTasks();
-
-
-  } catch (error) {
-
-    console.error(error);
-
-    showMessage(
-      "taskMessage",
-      "Server connection failed",
-      "error"
-    );
-
-  } finally {
-
-    hideLoading();
-
-  }
-
-}
-
-
-/* =========================================================
-   EDIT TASK
-========================================================= */
-
-function editTask(
-  taskId
-) {
-
-  const task =
-    tasks.find(
-      t =>
-        String(t.taskId) ===
-        String(taskId)
-    );
-
-
-  if (!task) return;
-
-
-  document
-    .getElementById(
-      "taskModalTitle"
-    )
-    .textContent =
-      "Edit Task";
-
-
-  document
-    .getElementById(
-      "editTaskId"
-    )
-    .value =
-      task.taskId;
-
-
-  document
-    .getElementById(
-      "taskTitle"
-    )
-    .value =
-      task.title;
-
-
-  document
-    .getElementById(
-      "taskDescription"
-    )
-    .value =
-      task.description || "";
-
-
-  document
-    .getElementById(
-      "taskPriority"
-    )
-    .value =
-      task.priority;
-
-
-  document
-    .getElementById(
-      "taskStatus"
-    )
-    .value =
-      task.status;
-
-
-  document
-    .getElementById(
-      "taskDueDate"
-    )
-    .value =
-      dateForInput(
-        task.dueDate
-      );
-
-
-  populateAssignedUsers();
-
-
-  document
-    .getElementById(
-      "taskAssignedTo"
-    )
-    .value =
-      task.assignedTo || "";
-
-
-  document
-    .getElementById(
-      "taskModal"
-    )
-    .classList.add("show");
-
-}
-
-
-/* =========================================================
-   DELETE TASK
-========================================================= */
-
-async function deleteTask(
-  taskId
-) {
-
-  if (
-    !confirm(
-      "Are you sure you want to delete this task?"
-    )
-  ) {
-
-    return;
-
-  }
-
-
-  showLoading();
-
-
-  try {
-
-    const result =
-      await api(
-        "deleteTask",
-        {
-          token,
-          taskId
-        }
-      );
-
-
-    if (!result.success) {
-
-      alert(
-        result.error ||
-        "Unable to delete task"
-      );
-
-      return;
-
-    }
-
-
-    await loadTasks();
-
-
-  } catch (error) {
-
-    console.error(error);
-
-    alert(
-      "Server connection failed"
-    );
-
-  } finally {
-
-    hideLoading();
-
-  }
-
-}
-
-
-/* =========================================================
-   ACCOUNTS
-========================================================= */
-
-function openAccountModal() {
-
-  const modal =
-    document.getElementById(
-      "accountModal"
-    );
-
-
-  if (!modal) return;
-
-
-  const today =
-    new Date();
-
-
-  const localDate =
-    today.getFullYear() +
-    "-" +
-    String(
-      today.getMonth() + 1
-    ).padStart(2, "0") +
-    "-" +
-    String(
-      today.getDate()
-    ).padStart(2, "0");
-
-
-  document
-    .getElementById(
-      "accountDate"
-    )
-    .value =
-      localDate;
-
-
-  document
-    .getElementById(
-      "accountType"
-    )
-    .value = "";
-
-
-  document
-    .getElementById(
-      "accountCategory"
-    )
-    .value = "";
-
-
-  document
-    .getElementById(
-      "accountDescription"
-    )
-    .value = "";
-
-
-  document
-    .getElementById(
-      "accountAmount"
-    )
-    .value = "";
-
-
-  document
-    .getElementById(
-      "accountPaymentMode"
-    )
-    .value =
-      "Cash";
-
-
-  document
-    .getElementById(
-      "accountParty"
-    )
-    .value = "";
-
-
-  document
-    .getElementById(
-      "accountReference"
-    )
-    .value = "";
-
-
-  document
-    .getElementById(
-      "accountMessage"
-    )
-    .innerHTML = "";
-
-
-  modal
-    .classList.add("show");
-
-}
-
-
-function closeAccountModal() {
-
-  const modal =
-    document.getElementById(
-      "accountModal"
-    );
-
-
-  if (modal) {
-
-    modal
-      .classList.remove("show");
-
-  }
-
-}
-
-
-/* =========================================================
-   SAVE ACCOUNT TRANSACTION
-========================================================= */
-
-async function saveAccountTransaction() {
-
-  const date =
-    document
-      .getElementById(
-        "accountDate"
-      )
-      .value;
-
-
-  const type =
-    document
-      .getElementById(
-        "accountType"
-      )
-      .value;
-
-
-  const category =
-    document
-      .getElementById(
-        "accountCategory"
-      )
-      .value;
-
-
-  const description =
-    document
-      .getElementById(
-        "accountDescription"
-      )
-      .value
-      .trim();
-
-
-  const amount =
-    Number(
-      document
-        .getElementById(
-          "accountAmount"
-        )
-        .value
-    );
-
-
-  const paymentMode =
-    document
-      .getElementById(
-        "accountPaymentMode"
-      )
-      .value;
-
-
-  const party =
-    document
-      .getElementById(
-        "accountParty"
-      )
-      .value
-      .trim();
-
-
-  const reference =
-    document
-      .getElementById(
-        "accountReference"
-      )
-      .value
-      .trim();
-
-
-  if (!date) {
-
-    showMessage(
-      "accountMessage",
-      "Date is required",
-      "error"
-    );
-
-    return;
-
-  }
-
-
-  if (!type) {
-
-    showMessage(
-      "accountMessage",
-      "Please select Income or Expense",
-      "error"
-    );
-
-    return;
-
-  }
-
-
-  if (!category) {
-
-    showMessage(
-      "accountMessage",
-      "Category is required",
-      "error"
-    );
-
-    return;
-
-  }
-
-
-  if (!description) {
-
-    showMessage(
-      "accountMessage",
-      "Description is required",
-      "error"
-    );
-
-    return;
-
-  }
-
-
-  if (!amount || amount <= 0) {
-
-    showMessage(
-      "accountMessage",
-      "Amount must be greater than zero",
-      "error"
-    );
-
-    return;
-
-  }
-
-
-  showLoading();
-
-
-  try {
-
-    const result =
-      await api(
-        "addAccountTransaction",
-        {
-          token,
-          date,
-          type,
-          category,
-          description,
-          amount,
-          paymentMode,
-          party,
-          reference
-        }
-      );
-
-
-    if (!result.success) {
-
-      showMessage(
-        "accountMessage",
-        result.error ||
-          "Unable to save transaction",
-        "error"
-      );
-
-      return;
-
-    }
-
-
-    showMessage(
-      "accountMessage",
-      result.message ||
-        "Transaction saved successfully",
-      "success"
-    );
-
-
-    /*
-     * IMPORTANT:
-     *
-     * Reload the data from Google Sheets
-     * after saving.
-     */
-
-    await loadAccounts();
-
-
-    setTimeout(
-      closeAccountModal,
-      800
-    );
-
-
-  } catch (error) {
-
-    console.error(
-      "Account transaction error:",
-      error
-    );
-
-
-    showMessage(
-      "accountMessage",
-      "Server connection failed",
-      "error"
-    );
-
-  } finally {
-
-    hideLoading();
-
-  }
-
-}
-
-
-/* =========================================================
-   LOAD ACCOUNTS
-========================================================= */
-
-async function loadAccounts() {
-
-  if (!token) {
-
-    console.warn(
-      "No authentication token."
-    );
-
-    return;
-
-  }
-
-
-  const searchElement =
-    document.getElementById(
-      "accountSearch"
-    );
-
-
-  const typeElement =
-    document.getElementById(
-      "accountTypeFilter"
-    );
-
-
-  const fromDateElement =
-    document.getElementById(
-      "accountFromDate"
-    );
-
-
-  const toDateElement =
-    document.getElementById(
-      "accountToDate"
-    );
-
-
-  const filters = {
-
-    token,
-
-    search:
-      searchElement
-        ? searchElement.value.trim()
-        : "",
-
-    type:
-      typeElement
-        ? typeElement.value
-        : "",
-
-    fromDate:
-      fromDateElement
-        ? fromDateElement.value
-        : "",
-
-    toDate:
-      toDateElement
-        ? toDateElement.value
-        : ""
-
-  };
-
-
-  try {
-
-    const result =
-      await api(
-        "getAccountTransactions",
-        filters
-      );
-
-
-    console.log(
-      "getAccountTransactions response:",
-      result
-    );
-
-
-    if (!result.success) {
-
-      console.error(
-        "Accounts error:",
-        result.error
-      );
-
-
-      renderAccounts([]);
-
-
-      return;
-
-    }
-
-
-    /*
-     * Backend may return:
-     *
-     * result.transactions
-     *
-     * We explicitly use that property.
-     */
-
-    const transactions =
-      Array.isArray(
-        result.transactions
-      )
-        ? result.transactions
-        : [];
-
-
-    renderAccounts(
-      transactions
-    );
-
-
-    await loadAccountsSummary(
-      filters
-    );
-
-
-  } catch (error) {
-
-    console.error(
-      "Load accounts error:",
-      error
-    );
-
-
-    renderAccounts([]);
-
-  }
-
-}
-
-
-/* =========================================================
-   ACCOUNTS SUMMARY
-========================================================= */
-
-async function loadAccountsSummary(
-  filters
-) {
-
-  try {
-
-    const result =
-      await api(
-        "getAccountsSummary",
-        filters
-      );
-
-
-    console.log(
-      "Accounts summary:",
-      result
-    );
-
-
-    if (!result.success) {
-
-      return;
-
-    }
-
-
-    document
-      .getElementById(
-        "accountTotalIncome"
-      )
-      .textContent =
-        formatCurrency(
-          result.totalIncome
-        );
-
-
-    document
-      .getElementById(
-        "accountTotalExpense"
-      )
-      .textContent =
-        formatCurrency(
-          result.totalExpense
-        );
-
-
-    document
-      .getElementById(
-        "accountBalance"
-      )
-      .textContent =
-        formatCurrency(
-          result.balance
-        );
-
-
-    document
-      .getElementById(
-        "accountTransactionCount"
-      )
-      .textContent =
-        Number(
-          result.transactionCount
-        ) || 0;
-
-
-  } catch (error) {
-
-    console.error(
-      "Accounts summary error:",
-      error
-    );
-
-  }
-
-}
-
-
-/* =========================================================
-   RENDER ACCOUNTS
-========================================================= */
-
-function renderAccounts(
-  transactions
-) {
-
-  const tbody =
-    document.getElementById(
-      "accountsTable"
-    );
-
-
-  if (!tbody) return;
-
-
-  tbody.innerHTML = "";
-
-
-  if (
-    !Array.isArray(
-      transactions
-    ) ||
-    !transactions.length
-  ) {
-
-    tbody.innerHTML = `
-
-      <tr>
-
-        <td
-          colspan="10"
-          style="
-            text-align:center;
-            padding:35px;
-            color:#64748b;
-          "
-        >
-          No transactions found
-        </td>
-
-      </tr>
-
-    `;
-
-
-    return;
-
-  }
-
-
-  transactions.forEach(
-    transaction => {
-
-      const tr =
-        document.createElement(
-          "tr"
-        );
-
-
-      const typeClass =
-        transaction.type === "Income"
-          ? "status-completed"
-          : "status-cancelled";
-
-
-      const id =
-        transaction.id ??
-        "";
-
-
-      tr.innerHTML = `
-
-        <td>
-          ${escapeHtml(id)}
-        </td>
-
-        <td>
-          ${escapeHtml(
-            transaction.date
-          )}
-        </td>
-
-        <td>
-
-          <span
-            class="badge ${typeClass}"
-          >
-            ${escapeHtml(
-              transaction.type
-            )}
-          </span>
-
-        </td>
-
-        <td>
-          ${escapeHtml(
-            transaction.category
-          )}
-        </td>
-
-        <td>
-          ${escapeHtml(
-            transaction.description
-          )}
-        </td>
-
-        <td>
-          ${formatCurrency(
-            transaction.amount
-          )}
-        </td>
-
-        <td>
-          ${escapeHtml(
-            transaction.paymentMode
-          )}
-        </td>
-
-        <td>
-          ${escapeHtml(
-            transaction.party
-          )}
-        </td>
-
-        <td>
-          ${escapeHtml(
-            transaction.reference
-          )}
-        </td>
-
-        <td>
-
-          <button
-            class="btn-danger"
-            onclick="
-              deleteAccountTransaction(
-                '${escapeHtml(id)}'
-              )
-            "
-          >
-            Delete
-          </button>
-
-        </td>
-
-      `;
-
-
-      tbody.appendChild(
-        tr
-      );
-
-    }
-  );
-
-}
-
-
-/* =========================================================
-   DELETE ACCOUNT TRANSACTION
-========================================================= */
-
-async function deleteAccountTransaction(
-  id
-) {
-
-  if (
-    !confirm(
-      "Are you sure you want to delete this transaction?"
-    )
-  ) {
-
-    return;
-
-  }
-
-
-  showLoading();
-
-
-  try {
-
-    const result =
-      await api(
-        "deleteAccountTransaction",
-        {
-          token,
-          id
-        }
-      );
-
-
-    if (!result.success) {
-
-      alert(
-        result.error ||
-        "Unable to delete transaction"
-      );
-
-      return;
-
-    }
-
-
-    await loadAccounts();
-
-
-  } catch (error) {
-
-    console.error(error);
-
-    alert(
-      "Server connection failed"
-    );
-
-  } finally {
-
-    hideLoading();
-
-  }
-
-}
-
-
-/* =========================================================
-   ACCOUNT FILTERS
-========================================================= */
-
-function clearAccountFilters() {
-
-  document
-    .getElementById(
-      "accountSearch"
-    )
-    .value = "";
-
-
-  document
-    .getElementById(
-      "accountTypeFilter"
-    )
-    .value = "";
-
-
-  document
-    .getElementById(
-      "accountFromDate"
-    )
-    .value = "";
-
-
-  document
-    .getElementById(
-      "accountToDate"
-    )
-    .value = "";
-
-
-  loadAccounts();
-
-}
-
-
-/* =========================================================
-   CURRENCY
-========================================================= */
-
-function formatCurrency(
-  value
-) {
-
-  return new Intl.NumberFormat(
-    "en-IN",
-    {
-      style: "currency",
-      currency: "INR",
-      maximumFractionDigits: 2
-    }
-  ).format(
-    Number(value) || 0
-  );
-
-}
-
-
-/* =========================================================
-   USERS
-========================================================= */
-
-async function loadUsers() {
-
-  if (
-    !currentUser ||
-    currentUser.role !== "Admin"
-  ) {
-
-    return;
-
-  }
-
-
-  try {
-
-    const result =
-      await api(
-        "adminUsers",
-        {
-          token
-        }
-      );
-
-
-    if (!result.success) {
-
-      console.error(
-        result.error
-      );
-
-      return;
-
-    }
-
-
-    users =
-      result.users || [];
-
-
-    renderUsers();
-
-
-    populateAssignedUsers();
-
-
-  } catch (error) {
-
-    console.error(error);
-
-  }
-
-}
-
-
-function renderUsers() {
-
-  const tbody =
-    document.getElementById(
-      "usersTable"
-    );
-
-
-  if (!tbody) return;
-
-
-  tbody.innerHTML = "";
-
-
-  users.forEach(
-    user => {
-
-      const tr =
-        document.createElement(
-          "tr"
-        );
-
-
-      const isSelf =
-        String(user.userId) ===
-        String(
-          currentUser.userId
-        );
-
-
-      tr.innerHTML = `
-
-        <td>
-          ${escapeHtml(
-            user.name
-          )}
-        </td>
-
-        <td>
-          ${escapeHtml(
-            user.email
-          )}
-        </td>
-
-        <td>
-
-          <select
-            onchange="
-              changeRole(
-                '${escapeHtml(user.userId)}',
-                this.value
-              )
-            "
-          >
-
-            <option
-              value="User"
-              ${
-                user.role === "User"
-                  ? "selected"
-                  : ""
-              }
-            >
-              User
-            </option>
-
-            <option
-              value="Admin"
-              ${
-                user.role === "Admin"
-                  ? "selected"
-                  : ""
-              }
-            >
-              Admin
-            </option>
-
-          </select>
-
-        </td>
-
-        <td>
-
-          <span
-            class="badge ${
-              user.status === "Active"
-                ? "status-completed"
-                : "status-cancelled"
-            }"
-          >
-            ${escapeHtml(
-              user.status
-            )}
-          </span>
-
-        </td>
-
-        <td>
-
-          ${
-            isSelf
-              ? ""
-              :
-              `
-              <button
-                class="${
-                  user.status === "Active"
-                    ? "btn-danger"
-                    : "btn-success"
-                }"
-                onclick="
-                  changeStatus(
-                    '${escapeHtml(user.userId)}',
-                    '${
-                      user.status === "Active"
-                        ? "Suspended"
-                        : "Active"
-                    }'
-                  )
-                "
-              >
-                ${
-                  user.status === "Active"
-                    ? "Suspend"
-                    : "Activate"
-                }
-              </button>
-              `
-          }
-
-        </td>
-
-      `;
-
-
-      tbody.appendChild(
-        tr
-      );
-
-    }
-  );
-
-}
-
-
-/* =========================================================
-   CHANGE ROLE
-========================================================= */
-
-async function changeRole(
-  userId,
-  role
-) {
-
-  try {
-
-    const result =
-      await api(
-        "changeUserRole",
-        {
-          token,
-          userId,
-          role
-        }
-      );
-
-
-    if (!result.success) {
-
-      alert(
-        result.error ||
-        "Unable to change role"
-      );
-
-    }
-
-
-    await loadUsers();
-
-
-  } catch (error) {
-
-    console.error(error);
-
-    alert(
-      "Server connection failed"
-    );
-
-  }
-
-}
-
-
-/* =========================================================
-   CHANGE STATUS
-========================================================= */
-
-async function changeStatus(
-  userId,
-  status
-) {
-
-  if (
-    !confirm(
-      "Change this user's status to " +
-      status +
-      "?"
-    )
-  ) {
-
-    await loadUsers();
-
-    return;
-
-  }
-
-
-  try {
-
-    const result =
-      await api(
-        "changeUserStatus",
-        {
-          token,
-          userId,
-          status
-        }
-      );
-
-
-    if (!result.success) {
-
-      alert(
-        result.error ||
-        "Unable to change status"
-      );
-
-    }
-
-
-    await loadUsers();
-
-
-  } catch (error) {
-
-    console.error(error);
-
-    alert(
-      "Server connection failed"
-    );
-
-  }
-
-}
-
-
-/* =========================================================
-   CHANGE PASSWORD
-========================================================= */
-
-async function changePassword() {
-
-  const oldPassword =
-    document
-      .getElementById(
-        "oldPassword"
-      )
-      .value;
-
-
-  const newPassword =
-    document
-      .getElementById(
-        "newPassword"
-      )
-      .value;
-
-
-  if (
-    !oldPassword ||
-    !newPassword
-  ) {
-
-    showMessage(
-      "passwordMessage",
-      "Both passwords are required",
-      "error"
-    );
-
-    return;
-
-  }
-
-
-  showLoading();
-
-
-  try {
-
-    const result =
-      await api(
-        "changePassword",
-        {
-          token,
-          oldPassword,
-          newPassword
-        }
-      );
-
-
-    if (!result.success) {
-
-      showMessage(
-        "passwordMessage",
-        result.error ||
-          "Unable to change password",
-        "error"
-      );
-
-      return;
-
-    }
-
-
-    showMessage(
-      "passwordMessage",
-      result.message ||
-        "Password changed successfully",
-      "success"
-    );
-
-
-    document
-      .getElementById(
-        "oldPassword"
-      )
-      .value = "";
-
-
-    document
-      .getElementById(
-        "newPassword"
-      )
-      .value = "";
-
-
-    setTimeout(
-      () => {
-
-        clearSession();
-
-        showAuth();
-
-      },
-      1500
-    );
-
-
-  } catch (error) {
-
-    console.error(error);
-
-    showMessage(
-      "passwordMessage",
-      "Server connection failed",
-      "error"
-    );
-
-  } finally {
-
-    hideLoading();
-
-  }
-
-}
-
-
-/* =========================================================
-   LOGOUT
-========================================================= */
-
-async function logout() {
-
-  try {
-
-    if (token) {
-
-      await api(
-        "logout",
-        {
-          token
-        }
-      );
-
-    }
-
-  } catch (error) {
-
-    console.error(error);
-
-  }
-
-
-  clearSession();
-
-  showAuth();
-
-}
-
-
-function clearSession() {
+function logout() {
 
   token = "";
 
   currentUser = null;
 
-  tasks = [];
+  localStorage.removeItem("dreamLaddersToken");
 
-  users = [];
+  document.getElementById("authScreen").style.display = "flex";
 
-
-  localStorage.removeItem(
-    "dreamLaddersToken"
-  );
+  document.getElementById("app").style.display = "none";
 
 }
 
 
 /* =========================================================
-   NAVIGATION
+   NAVIGATION & UI SETUP
 ========================================================= */
 
-function showPage(
-  pageId,
-  element
-) {
+function setupAppUI() {
 
-  document
-    .querySelectorAll(".page")
-    .forEach(
-      page =>
-        page.classList.remove(
-          "active"
-        )
-    );
+  document.getElementById("authScreen").style.display = "none";
+
+  document.getElementById("app").style.display = "block";
 
 
-  const page =
-    document.getElementById(
-      pageId
-    );
+  if (currentUser) {
+
+    document.getElementById("topUserName").innerText = currentUser.name || "User";
+
+    document.getElementById("topUserRole").innerText = currentUser.role || "User";
+
+    document.getElementById("avatar").innerText =
+      (currentUser.name || "U").charAt(0).toUpperCase();
 
 
-  if (!page) return;
+    document.getElementById("profileName").value = currentUser.name || "";
+
+    document.getElementById("profileEmail").value = currentUser.email || "";
+
+    document.getElementById("profileRole").value = currentUser.role || "";
+
+    document.getElementById("profileStatus").value = currentUser.status || "Active";
 
 
-  page.classList.add(
-    "active"
-  );
+    if (currentUser.role === "Admin") {
 
+      document.getElementById("adminNav").style.display = "block";
 
-  document
-    .querySelectorAll(".nav-item")
-    .forEach(
-      item =>
-        item.classList.remove(
-          "active"
-        )
-    );
+    } else {
 
+      document.getElementById("adminNav").style.display = "none";
 
-  if (element) {
-
-    element.classList.add(
-      "active"
-    );
+    }
 
   }
-
-
-  /* =====================================================
-     IMPORTANT FIX
-     Accounts title was missing before.
-  ===================================================== */
-
-  const titles = {
-
-    dashboard: "Dashboard",
-
-    tasks: "Tasks",
-
-    accounts: "Accounts",
-
-    profile: "Profile",
-
-    users: "Users"
-
-  };
-
-
-  document
-    .getElementById(
-      "pageTitle"
-    )
-    .textContent =
-      titles[pageId] ||
-      "Dream Ladders";
-
-
-  /* =====================================================
-     PAGE DATA LOADING
-  ===================================================== */
-
-  if (
-    pageId === "users"
-  ) {
-
-    loadUsers();
-
-  }
-
-
-  if (
-    pageId === "tasks"
-  ) {
-
-    loadTasks();
-
-  }
-
-
-  /*
-   * THIS WAS MISSING IN YOUR ORIGINAL CODE.
-   *
-   * Every time Accounts is opened,
-   * data is fetched from Google Sheets.
-   */
-
-  if (
-    pageId === "accounts"
-  ) {
-
-    loadAccounts();
-
-  }
-
-
-  if (
-    window.innerWidth <= 850
-  ) {
-
-    document
-      .getElementById(
-        "sidebar"
-      )
-      .classList.remove(
-        "open"
-      );
-
-  }
-
-}
-
-
-function showPageById(
-  pageId
-) {
-
-  const button =
-    document.querySelector(
-      `.nav-item[onclick*="'${pageId}'"]`
-    );
-
-
-  showPage(
-    pageId,
-    button
-  );
 
 }
 
@@ -4573,178 +2169,1047 @@ function showPageById(
 function toggleSidebar() {
 
   document
-    .getElementById(
-      "sidebar"
-    )
-    .classList.toggle(
-      "open"
-    );
+    .getElementById("sidebar")
+    .classList
+    .toggle("open");
+
+}
+
+
+function showPage(pageId, btnElement) {
+
+  const pages = document.querySelectorAll(".page");
+
+  pages.forEach(page => page.classList.remove("active"));
+
+
+  const targetPage = document.getElementById(pageId);
+
+  if (targetPage) {
+
+    targetPage.classList.add("active");
+
+  }
+
+
+  const navItems = document.querySelectorAll(".nav-item");
+
+  navItems.forEach(item => item.classList.remove("active"));
+
+
+  if (btnElement) {
+
+    btnElement.classList.add("active");
+
+  }
+
+
+  const pageTitleEl = document.getElementById("pageTitle");
+
+  if (pageTitleEl) {
+
+    pageTitleEl.innerText =
+      pageId.charAt(0).toUpperCase() + pageId.slice(1);
+
+  }
+
+
+  const sidebar = document.getElementById("sidebar");
+
+  if (sidebar.classList.contains("open")) {
+
+    sidebar.classList.remove("open");
+
+  }
+
+}
+
+
+function showPageById(pageId) {
+
+  const navBtn = Array.from(document.querySelectorAll(".nav-item")).find(btn =>
+    btn.getAttribute("onclick") && btn.getAttribute("onclick").includes(`'${pageId}'`)
+  );
+
+  showPage(pageId, navBtn);
 
 }
 
 
 /* =========================================================
-   MESSAGES
+   INITIALIZATION & DATA LOADING
 ========================================================= */
 
-function showMessage(
-  elementId,
-  message,
-  type
-) {
+async function checkAuth() {
 
-  const element =
-    document.getElementById(
-      elementId
-    );
+  if (!token) {
 
+    document.getElementById("authScreen").style.display = "flex";
 
-  if (!element) return;
+    document.getElementById("app").style.display = "none";
+
+    return;
+
+  }
 
 
-  element.innerHTML = `
+  showLoading();
 
-    <div class="${type}">
-      ${escapeHtml(message)}
+
+  try {
+
+    const result = await api("getProfile");
+
+
+    if (result.success && result.user) {
+
+      currentUser = result.user;
+
+      setupAppUI();
+
+      await loadInitialData();
+
+    } else {
+
+      logout();
+
+    }
+
+  } catch (err) {
+
+    logout();
+
+  } finally {
+
+    hideLoading();
+
+  }
+
+}
+
+
+async function loadInitialData() {
+
+  await loadUsers();
+
+  await loadTasks();
+
+  await loadAccounts();
+
+}
+
+
+/* =========================================================
+   TASKS MODULE
+========================================================= */
+
+async function loadTasks() {
+
+  try {
+
+    const result = await api("getTasks");
+
+    if (result.success) {
+
+      tasks = result.tasks || [];
+
+      renderTasks();
+
+      renderDashboardTasks();
+
+      updateTaskStats();
+
+    }
+
+  } catch (err) {
+
+    console.error("Failed to load tasks", err);
+
+  }
+
+}
+
+
+function updateTaskStats() {
+
+  document.getElementById("statTotal").innerText = tasks.length;
+
+  document.getElementById("statPending").innerText =
+    tasks.filter(t => t.status === "Pending").length;
+
+  document.getElementById("statProgress").innerText =
+    tasks.filter(t => t.status === "In Progress").length;
+
+  document.getElementById("statCompleted").innerText =
+    tasks.filter(t => t.status === "Completed").length;
+
+}
+
+
+function getPriorityBadgeClass(priority) {
+
+  switch ((priority || "").toLowerCase()) {
+
+    case "low": return "priority-low";
+
+    case "medium": return "priority-medium";
+
+    case "high": return "priority-high";
+
+    case "urgent": return "priority-urgent";
+
+    default: return "priority-low";
+
+  }
+
+}
+
+
+function getStatusBadgeClass(status) {
+
+  switch ((status || "").toLowerCase()) {
+
+    case "pending": return "status-pending";
+
+    case "in progress": return "status-progress";
+
+    case "completed": return "status-completed";
+
+    case "cancelled": return "status-cancelled";
+
+    default: return "status-pending";
+
+  }
+
+}
+
+
+function renderTaskCardHtml(task) {
+
+  const priorityClass = getPriorityBadgeClass(task.priority);
+
+  const statusClass = getStatusBadgeClass(task.status);
+
+  const dueDate = task.dueDate ? new Date(task.dueDate).toLocaleDateString() : "No due date";
+
+
+  return `
+
+    <div class="task-card">
+
+      <div class="task-title">${escapeHtml(task.title || "")}</div>
+
+      <div class="task-description">${escapeHtml(task.description || "")}</div>
+
+      <div class="badges">
+
+        <span class="badge ${priorityClass}">${escapeHtml(task.priority || "Medium")}</span>
+
+        <span class="badge ${statusClass}">${escapeHtml(task.status || "Pending")}</span>
+
+      </div>
+
+      <div style="font-size:12px;color:#64748b;margin-bottom:12px;">
+
+        <div>Assigned: ${escapeHtml(task.assignedToName || task.assignedTo || "Unassigned")}</div>
+
+        <div>Due: ${dueDate}</div>
+
+      </div>
+
+      <div class="task-actions">
+
+        <button class="btn-secondary" onclick="openEditTaskModal('${task.id}')">Edit</button>
+
+        <button class="btn-danger" onclick="deleteTask('${task.id}')">Delete</button>
+
+      </div>
+
     </div>
 
   `;
 
+}
 
-  setTimeout(
-    () => {
 
-      element.innerHTML = "";
+function renderTasks() {
 
-    },
-    5000
-  );
+  const container = document.getElementById("taskList");
+
+  if (!container) return;
+
+
+  if (tasks.length === 0) {
+
+    container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: #64748b; padding: 20px;">No tasks found.</div>`;
+
+    return;
+
+  }
+
+
+  container.innerHTML = tasks.map(renderTaskCardHtml).join("");
+
+}
+
+
+function renderDashboardTasks() {
+
+  const container = document.getElementById("dashboardTasks");
+
+  if (!container) return;
+
+
+  const recentTasks = tasks.slice(0, 6);
+
+
+  if (recentTasks.length === 0) {
+
+    container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: #64748b; padding: 20px;">No recent tasks.</div>`;
+
+    return;
+
+  }
+
+
+  container.innerHTML = recentTasks.map(renderTaskCardHtml).join("");
+
+}
+
+
+function openCreateTaskModal() {
+
+  clearMessage("taskMessage");
+
+  document.getElementById("editTaskId").value = "";
+
+  document.getElementById("taskModalTitle").innerText = "Create Task";
+
+  document.getElementById("taskTitle").value = "";
+
+  document.getElementById("taskDescription").value = "";
+
+  document.getElementById("taskPriority").value = "Medium";
+
+  document.getElementById("taskStatus").value = "Pending";
+
+  document.getElementById("taskDueDate").value = "";
+
+
+  populateUserDropdown("taskAssignedTo");
+
+  document.getElementById("taskModal").classList.add("show");
+
+}
+
+
+function openEditTaskModal(taskId) {
+
+  clearMessage("taskMessage");
+
+  const task = tasks.find(t => String(t.id) === String(taskId));
+
+  if (!task) return;
+
+
+  document.getElementById("editTaskId").value = task.id;
+
+  document.getElementById("taskModalTitle").innerText = "Edit Task";
+
+  document.getElementById("taskTitle").value = task.title || "";
+
+  document.getElementById("taskDescription").value = task.description || "";
+
+  document.getElementById("taskPriority").value = task.priority || "Medium";
+
+  document.getElementById("taskStatus").value = task.status || "Pending";
+
+  document.getElementById("taskDueDate").value = task.dueDate ? task.dueDate.split("T")[0] : "";
+
+
+  populateUserDropdown("taskAssignedTo");
+
+  document.getElementById("taskAssignedTo").value = task.assignedTo || "";
+
+
+  document.getElementById("taskModal").classList.add("show");
+
+}
+
+
+function closeTaskModal() {
+
+  document.getElementById("taskModal").classList.remove("show");
+
+}
+
+
+async function saveTask() {
+
+  const id = document.getElementById("editTaskId").value;
+
+  const title = document.getElementById("taskTitle").value.trim();
+
+  const description = document.getElementById("taskDescription").value.trim();
+
+  const assignedTo = document.getElementById("taskAssignedTo").value;
+
+  const priority = document.getElementById("taskPriority").value;
+
+  const status = document.getElementById("taskStatus").value;
+
+  const dueDate = document.getElementById("taskDueDate").value;
+
+
+  if (!title) {
+
+    showMessage("taskMessage", "Task title is required", "error");
+
+    return;
+
+  }
+
+
+  showLoading();
+
+
+  try {
+
+    const action = id ? "updateTask" : "createTask";
+
+    const payload = { id, title, description, assignedTo, priority, status, dueDate };
+
+
+    const result = await api(action, payload);
+
+
+    if (result.success) {
+
+      closeTaskModal();
+
+      await loadTasks();
+
+    } else {
+
+      showMessage("taskMessage", result.error || "Failed to save task", "error");
+
+    }
+
+  } catch (err) {
+
+    showMessage("taskMessage", err.message || "An error occurred", "error");
+
+  } finally {
+
+    hideLoading();
+
+  }
+
+}
+
+
+async function deleteTask(taskId) {
+
+  if (!confirm("Are you sure you want to delete this task?")) return;
+
+
+  showLoading();
+
+
+  try {
+
+    const result = await api("deleteTask", { id: taskId });
+
+    if (result.success) {
+
+      await loadTasks();
+
+    } else {
+
+      alert(result.error || "Failed to delete task");
+
+    }
+
+  } catch (err) {
+
+    alert(err.message || "An error occurred");
+
+  } finally {
+
+    hideLoading();
+
+  }
 
 }
 
 
 /* =========================================================
-   DATE
+   ACCOUNTS MODULE
 ========================================================= */
 
-function formatDate(
-  value
-) {
+async function loadAccounts() {
 
-  if (!value) {
+  const search = document.getElementById("accountSearch")?.value || "";
 
-    return "";
+  const type = document.getElementById("accountTypeFilter")?.value || "";
+
+  const fromDate = document.getElementById("accountFromDate")?.value || "";
+
+  const toDate = document.getElementById("accountToDate")?.value || "";
+
+
+  try {
+
+    const result = await api("getAccounts", { search, type, fromDate, toDate });
+
+    if (result.success) {
+
+      accounts = result.accounts || [];
+
+      renderAccountsTable();
+
+      updateAccountStats(result.summary);
+
+    }
+
+  } catch (err) {
+
+    console.error("Failed to load accounts", err);
 
   }
-
-
-  const date =
-    new Date(value);
-
-
-  if (
-    isNaN(
-      date.getTime()
-    )
-  ) {
-
-    return String(value);
-
-  }
-
-
-  return date.toLocaleDateString();
 
 }
 
 
-function dateForInput(
-  value
-) {
+function clearAccountFilters() {
 
-  if (!value) {
+  document.getElementById("accountSearch").value = "";
 
-    return "";
+  document.getElementById("accountTypeFilter").value = "";
+
+  document.getElementById("accountFromDate").value = "";
+
+  document.getElementById("accountToDate").value = "";
+
+  loadAccounts();
+
+}
+
+
+function updateAccountStats(summary) {
+
+  let totalIncome = 0;
+
+  let totalExpense = 0;
+
+
+  if (summary) {
+
+    totalIncome = summary.totalIncome || 0;
+
+    totalExpense = summary.totalExpense || 0;
+
+  } else {
+
+    accounts.forEach(acc => {
+
+      const amt = parseFloat(acc.amount) || 0;
+
+      if (acc.type === "Income") totalIncome += amt;
+
+      if (acc.type === "Expense") totalExpense += amt;
+
+    });
 
   }
 
 
-  const date =
-    new Date(value);
+  const balance = totalIncome - totalExpense;
 
 
-  if (
-    isNaN(
-      date.getTime()
-    )
-  ) {
+  document.getElementById("accountTotalIncome").innerText = "₹" + totalIncome.toLocaleString('en-IN');
 
-    return "";
+  document.getElementById("accountTotalExpense").innerText = "₹" + totalExpense.toLocaleString('en-IN');
+
+  document.getElementById("accountBalance").innerText = "₹" + balance.toLocaleString('en-IN');
+
+  document.getElementById("accountTransactionCount").innerText = accounts.length;
+
+}
+
+
+function renderAccountsTable() {
+
+  const tbody = document.getElementById("accountsTable");
+
+  if (!tbody) return;
+
+
+  if (accounts.length === 0) {
+
+    tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;color:#64748b;padding:20px;">No transactions found.</td></tr>`;
+
+    return;
 
   }
 
 
-  return date
-    .toISOString()
-    .split("T")[0];
+  tbody.innerHTML = accounts.map(acc => {
+
+    const dateStr = acc.date ? new Date(acc.date).toLocaleDateString() : "";
+
+    const typeColor = acc.type === "Income" ? "color:#15803d;font-weight:bold;" : "color:#dc2626;font-weight:bold;";
+
+
+    return `
+
+      <tr>
+
+        <td>${escapeHtml(acc.id || "")}</td>
+
+        <td>${dateStr}</td>
+
+        <td style="${typeColor}">${escapeHtml(acc.type || "")}</td>
+
+        <td>${escapeHtml(acc.category || "")}</td>
+
+        <td>${escapeHtml(acc.description || "")}</td>
+
+        <td>₹${parseFloat(acc.amount || 0).toLocaleString('en-IN')}</td>
+
+        <td>${escapeHtml(acc.paymentMode || "")}</td>
+
+        <td>${escapeHtml(acc.party || "")}</td>
+
+        <td>${escapeHtml(acc.reference || "")}</td>
+
+        <td>
+
+          <button class="btn-danger" style="padding:4px 8px;font-size:12px;" onclick="deleteAccountTransaction('${acc.id}')">Delete</button>
+
+        </td>
+
+      </tr>
+
+    `;
+
+  }).join("");
+
+}
+
+
+function openAccountModal() {
+
+  clearMessage("accountMessage");
+
+  document.getElementById("accountDate").value = new Date().toISOString().split("T")[0];
+
+  document.getElementById("accountType").value = "";
+
+  document.getElementById("accountCategory").value = "";
+
+  document.getElementById("accountDescription").value = "";
+
+  document.getElementById("accountAmount").value = "";
+
+  document.getElementById("accountPaymentMode").value = "Cash";
+
+  document.getElementById("accountParty").value = "";
+
+  document.getElementById("accountReference").value = "";
+
+
+  document.getElementById("accountModal").classList.add("show");
+
+}
+
+
+function closeAccountModal() {
+
+  document.getElementById("accountModal").classList.remove("show");
+
+}
+
+
+async function saveAccountTransaction() {
+
+  const date = document.getElementById("accountDate").value;
+
+  const type = document.getElementById("accountType").value;
+
+  const category = document.getElementById("accountCategory").value;
+
+  const description = document.getElementById("accountDescription").value.trim();
+
+  const amount = document.getElementById("accountAmount").value;
+
+  const paymentMode = document.getElementById("accountPaymentMode").value;
+
+  const party = document.getElementById("accountParty").value.trim();
+
+  const reference = document.getElementById("accountReference").value.trim();
+
+
+  if (!date || !type || !category || !description || !amount) {
+
+    showMessage("accountMessage", "Please fill in all required fields", "error");
+
+    return;
+
+  }
+
+
+  showLoading();
+
+
+  try {
+
+    const result = await api("addAccountTransaction", {
+
+      date, type, category, description, amount: parseFloat(amount), paymentMode, party, reference
+
+    });
+
+
+    if (result.success) {
+
+      closeAccountModal();
+
+      await loadAccounts();
+
+    } else {
+
+      showMessage("accountMessage", result.error || "Failed to save transaction", "error");
+
+    }
+
+  } catch (err) {
+
+    showMessage("accountMessage", err.message || "An error occurred", "error");
+
+  } finally {
+
+    hideLoading();
+
+  }
+
+}
+
+
+async function deleteAccountTransaction(id) {
+
+  if (!confirm("Are you sure you want to delete this transaction?")) return;
+
+
+  showLoading();
+
+
+  try {
+
+    const result = await api("deleteAccountTransaction", { id });
+
+    if (result.success) {
+
+      await loadAccounts();
+
+    } else {
+
+      alert(result.error || "Failed to delete transaction");
+
+    }
+
+  } catch (err) {
+
+    alert(err.message || "An error occurred");
+
+  } finally {
+
+    hideLoading();
+
+  }
 
 }
 
 
 /* =========================================================
-   HTML ESCAPE
+   PROFILE & PASSWORD
 ========================================================= */
 
-function escapeHtml(
-  value
-) {
+async function changePassword() {
 
-  return String(
-    value ?? ""
-  )
+  const oldPassword = document.getElementById("oldPassword").value;
 
-    .replace(
-      /&/g,
-      "&amp;"
-    )
+  const newPassword = document.getElementById("newPassword").value;
 
-    .replace(
-      /</g,
-      "&lt;"
-    )
 
-    .replace(
-      />/g,
-      "&gt;"
-    )
+  if (!oldPassword || !newPassword) {
 
-    .replace(
-      /"/g,
-      "&quot;"
-    )
+    showMessage("passwordMessage", "Both password fields are required", "error");
 
-    .replace(
-      /'/g,
-      "&#039;"
-    );
+    return;
+
+  }
+
+
+  showLoading();
+
+
+  try {
+
+    const result = await api("changePassword", { oldPassword, newPassword });
+
+
+    if (result.success) {
+
+      showMessage("passwordMessage", "Password changed successfully!", "success");
+
+      document.getElementById("oldPassword").value = "";
+
+      document.getElementById("newPassword").value = "";
+
+    } else {
+
+      showMessage("passwordMessage", result.error || "Password change failed", "error");
+
+    }
+
+  } catch (err) {
+
+    showMessage("passwordMessage", err.message || "An error occurred", "error");
+
+  } finally {
+
+    hideLoading();
+
+  }
 
 }
 
 
 /* =========================================================
-   START APPLICATION
+   USER MANAGEMENT (ADMIN)
 ========================================================= */
 
-document.addEventListener(
-  "DOMContentLoaded",
-  () => {
+async function loadUsers() {
 
-    initializeApp();
+  try {
+
+    const result = await api("getUsers");
+
+    if (result.success) {
+
+      users = result.users || [];
+
+      renderUsersTable();
+
+    }
+
+  } catch (err) {
+
+    console.error("Failed to load users", err);
 
   }
-);
+
+}
+
+
+function renderUsersTable() {
+
+  const tbody = document.getElementById("usersTable");
+
+  if (!tbody) return;
+
+
+  if (users.length === 0) {
+
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:#64748b;padding:20px;">No users found.</td></tr>`;
+
+    return;
+
+  }
+
+
+  tbody.innerHTML = users.map(u => `
+
+    <tr>
+
+      <td>${escapeHtml(u.name || "")}</td>
+
+      <td>${escapeHtml(u.email || "")}</td>
+
+      <td>
+
+        <select onchange="updateUserRole('${u.email}', this.value)">
+
+          <option value="User" ${u.role === "User" ? "selected" : ""}>User</option>
+
+          <option value="Admin" ${u.role === "Admin" ? "selected" : ""}>Admin</option>
+
+        </select>
+
+      </td>
+
+      <td>
+
+        <select onchange="updateUserStatus('${u.email}', this.value)">
+
+          <option value="Active" ${u.status === "Active" ? "selected" : ""}>Active</option>
+
+          <option value="Disabled" ${u.status === "Disabled" ? "selected" : ""}>Disabled</option>
+
+        </select>
+
+      </td>
+
+      <td>
+
+        <button class="btn-danger" style="padding:4px 8px;font-size:12px;" onclick="deleteUser('${u.email}')">Delete</button>
+
+      </td>
+
+    </tr>
+
+  `).join("");
+
+}
+
+
+function populateUserDropdown(selectId) {
+
+  const select = document.getElementById(selectId);
+
+  if (!select) return;
+
+
+  let html = '<option value="">Unassigned</option>';
+
+  users.forEach(u => {
+
+    html += `<option value="${escapeHtml(u.email)}">${escapeHtml(u.name || u.email)}</option>`;
+
+  });
+
+
+  select.innerHTML = html;
+
+}
+
+
+async function updateUserRole(email, role) {
+
+  showLoading();
+
+  try {
+
+    const result = await api("updateUserRole", { email, role });
+
+    if (!result.success) alert(result.error || "Failed to update role");
+
+  } catch (err) {
+
+    alert(err.message || "An error occurred");
+
+  } finally {
+
+    hideLoading();
+
+  }
+
+}
+
+
+async function updateUserStatus(email, status) {
+
+  showLoading();
+
+  try {
+
+    const result = await api("updateUserStatus", { email, status });
+
+    if (!result.success) alert(result.error || "Failed to update status");
+
+  } catch (err) {
+
+    alert(err.message || "An error occurred");
+
+  } finally {
+
+    hideLoading();
+
+  }
+
+}
+
+
+async function deleteUser(email) {
+
+  if (!confirm(`Are you sure you want to delete user ${email}?`)) return;
+
+
+  showLoading();
+
+  try {
+
+    const result = await api("deleteUser", { email });
+
+    if (result.success) {
+
+      await loadUsers();
+
+    } else {
+
+      alert(result.error || "Failed to delete user");
+
+    }
+
+  } catch (err) {
+
+    alert(err.message || "An error occurred");
+
+  } finally {
+
+    hideLoading();
+
+  }
+
+}
+
+
+/* =========================================================
+   UTILITIES
+========================================================= */
+
+function escapeHtml(str) {
+
+  if (typeof str !== "string") return str;
+
+  return str
+
+    .replace(/&/g, "&amp;")
+
+    .replace(/</g, "&lt;")
+
+    .replace(/>/g, "&gt;")
+
+    .replace(/"/g, "&quot;")
+
+    .replace(/'/g, "&#039;");
+
+}
+
+
+/* =========================================================
+   INIT
+========================================================= */
+
+window.addEventListener("DOMContentLoaded", () => {
+
+  checkAuth();
+
+});
 
 </script>
 
 </body>
+
 </html>
